@@ -198,7 +198,7 @@ EndFunc
 
 Func FindDriveByLabel($strLabel)
 	;
-	Local $curIndex
+	Local $curIndex, $curDrive
 	$curIndex = 0
 	Do
 		$curDrive = DriveGetLabel($arrAlphabet[$curIndex] & ":\")
@@ -207,6 +207,7 @@ Func FindDriveByLabel($strLabel)
 		EndIf
 		$curIndex = $curIndex + 1
 	Until $curIndex = 26
+	Return ""
 EndFunc
 
 Func EraseDownloadApplyWIM($strName)
@@ -214,52 +215,73 @@ Func EraseDownloadApplyWIM($strName)
 	Local $outApplyData, $outApplyHome, $outBCDBoot, $outBootSect, $curIndex, $outMBRFix
 	Local $drvSystem, $drvHome, $drvRecovery, $drvData, $outSetPartActive
 	
-	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=X:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & "/disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
-	If ($outDownload = 0) And (@error <> 0) Then
-		MsgBox(0, "Download Failed", "Download of partition info failed.")
-		Return 0
-	EndIf
-	; assume disk partition info is at X:\disk.wipe.txt
-	; now run gdisk32.
-	$outPartition = RunWait("X:\Program Files\Ghost\Gdisk32.exe 1 /BATCH:X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
-	If ($outPartition = 0) And (@error <> 0) Then
-		MsgBox(0, "Error", "Partitioning failed.  See Gdisk32 for more info.")
-		Return 0
-	EndIf
+;~ 	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=X:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & "/disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
+;~ 	If ($outDownload = 0) And (@error <> 0) Then
+;~ 		MsgBox(0, "Download Failed", "Download of partition info failed.")
+;~ 		Return 0
+;~ 	EndIf
+;~ 	; assume disk partition info is at X:\disk.wipe.txt
+;~ 	; now run gdisk32.
+;~ 	$outPartition = RunWait("X:\Program Files\Ghost\Gdisk32.exe 1 /BATCH:X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
+;~ 	If ($outPartition = 0) And (@error <> 0) Then
+;~ 		MsgBox(0, "Error", "Partitioning failed.  See Gdisk32 for more info.")
+;~ 		Return 0
+;~ 	EndIf
 
-	$curIndex = 0
-	Do
-		If ($strName == "CFS") And (($drvSystem <> "") And ($drvRecovery <> "") And ($drvHome <> "") And ($drvData <> "")) Then
-			$curIndex = $curIndex + 1
-			ContinueLoop
-		EndIf
+	PartitionMachine($strName)
+	If $strName == "CFS" Then
+		$drvSystem = FindDriveByLabel("System")
+		$drvData = FindDriveByLabel("Data")
+		$drvHome = FindDriveByLabel("Home")
+		$drvRecovery = FindDriveByLabel("Reserved")
 		
-		If ($strName <> "CFS") And (($drvSystem <> "") And ($drvRecovery <> "") And ($drvData <> "")) Then
-			$curIndex = $curIndex + 1
-			ContinueLoop
+		If ($drvSystem == "") Or ($drvData == "") Or ($drvHome == "") Or ($drvRecovery == "") Then
+			MsgBox(0, "Error", "Failed to detect partitions. Please try again.")
+			Return 0
 		EndIf
-		
-		$curDrive = DriveGetLabel($arrAlphabet[$curIndex] & ":\")
-		Switch $curDrive
-		Case "System"
-			$drvSystem = $arrAlphabet[$curIndex] & ":\"
-		Case "Reserved"
-			$drvRecovery = $arrAlphabet[$curIndex] & ":\"
-		Case "Home"
-			$drvHome = $arrAlphabet[$curIndex] & ":\"
-		Case "Data"
-			$drvData = $arrAlphabet[$curIndex] & ":\"
-		EndSwitch
-		$curIndex = $curIndex + 1
-	Until $curIndex = 26
+	Else
+		$drvSystem = FindDriveByLabel("System")
+		$drvData = FindDriveByLabel("Data")
+		$drvRecovery = FindDriveByLabel("Recovery")
+		If ($drvSystem == "") Or ($drvData == "") Or ($drvRecovery == "") Then
+			MsgBox(0, "Error", "Failed to detect partitions. Please try again.")
+			Return 0
+		EndIf
+	EndIf
+	
+;~ 	$curIndex = 0
+;~ 	Do
+;~ 		If ($strName == "CFS") And (($drvSystem <> "") And ($drvRecovery <> "") And ($drvHome <> "") And ($drvData <> "")) Then
+;~ 			$curIndex = $curIndex + 1
+;~ 			ContinueLoop
+;~ 		EndIf
+;~ 		
+;~ 		If ($strName <> "CFS") And (($drvSystem <> "") And ($drvRecovery <> "") And ($drvData <> "")) Then
+;~ 			$curIndex = $curIndex + 1
+;~ 			ContinueLoop
+;~ 		EndIf
+;~ 		
+;~ 		$curDrive = DriveGetLabel($arrAlphabet[$curIndex] & ":\")
+;~ 		Switch $curDrive
+;~ 		Case "System"
+;~ 			$drvSystem = $arrAlphabet[$curIndex] & ":\"
+;~ 		Case "Reserved"
+;~ 			$drvRecovery = $arrAlphabet[$curIndex] & ":\"
+;~ 		Case "Home"
+;~ 			$drvHome = $arrAlphabet[$curIndex] & ":\"
+;~ 		Case "Data"
+;~ 			$drvData = $arrAlphabet[$curIndex] & ":\"
+;~ 		EndSwitch
+;~ 		$curIndex = $curIndex + 1
+;~ 	Until $curIndex = 26
 		
 	
-	; check our partitions are working
-	If (DriveGetLabel($drvSystem) <> "System") Or (DriveGetLabel($drvData) <> "Data") Then
-		; Our Partitions arent working.
-		MsgBox(0, "Error", "Failed Partition Check. Either System or Data isnt showing up in their correct locations. Exiting." & $drvSystem & " = " & DriveGetLabel($drvSystem) & $drvData & " = " & DriveGetLabel($drvSystem))
-		Return 0
-	EndIf
+;~ 	; check our partitions are working
+;~ 	If (DriveGetLabel($drvSystem) <> "System") Or (DriveGetLabel($drvData) <> "Data") Then
+;~ 		; Our Partitions arent working.
+;~ 		MsgBox(0, "Error", "Failed Partition Check. Either System or Data isnt showing up in their correct locations. Exiting." & $drvSystem & " = " & DriveGetLabel($drvSystem) & $drvData & " = " & DriveGetLabel($drvSystem))
+;~ 		Return 0
+;~ 	EndIf
 	
 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
 	If ($outTorrent = 0) And (@error <> 0) Then
@@ -311,45 +333,80 @@ Func EraseDownloadApplyWIM($strName)
 	
 	; Fix Bootsector -- TODO CFS
 	
+;~ 	If $strName == "CFS" Then
+;~ 		; might have to fix this -- the drive letters might change when it gets remounted.
+;~ 		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "X:\", @SW_SHOWNORMAL)
+;~ 		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "X:\", @SW_SHOWNORMAL)
+;~ 		$drvHome = FindDriveByLabel("Home") & ":\"
+;~ 		FixBCDDrive(StringLeft($drvHome, 1), True, True)
+;~ 		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "X:\", @SW_SHOWNORMAL)
+;~ 		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "X:\", @SW_SHOWNORMAL)
+;~ 		$drvSystem = FindDriveByLabel("System") & ":\"
+;~ 		FixBCDDrive(StringLeft($drvSystem, 1), True, True)
+;~ 	Else
+;~ 		FixBCDDrive(StringLeft($drvSystem, 1), True, False)
+;~ 	EndIf
+
+; merge this code into BCDFix when mature.
 	If $strName == "CFS" Then
-		; might have to fix this -- the drive letters might change when it gets remounted.
-		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "X:\", @SW_SHOWNORMAL)
-		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "X:\", @SW_SHOWNORMAL)
+		; Unhide drives.
+		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "Failed to hide partition 1.")
+		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "Failed to hide partition 3.")
 		$drvHome = FindDriveByLabel("Home") & ":\"
-		FixBCDDrive(StringLeft($drvHome, 1), True, True)
-		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "X:\", @SW_SHOWNORMAL)
-		RunWait("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "X:\", @SW_SHOWNORMAL)
+		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
+		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvHome, 2), "Error writing bootmgr location on Home")
+		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} device partition=" & StringLeft($drvHome, 2), "Error writing device location on Home")
+		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvHome, 2), "Error writing osdevice location on Home")
+		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on Home")
+		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
+		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
 		$drvSystem = FindDriveByLabel("System") & ":\"
-		FixBCDDrive(StringLeft($drvSystem, 1), True, True)
+		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
+		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
+		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
+		$drvHome = FindDriveByLabel("Home") & ":\"
+		$drvSystem = FindDriveByLabel("System") & ":\"
+		; we are back to how we were before.
 	Else
-		FixBCDDrive(StringLeft($drvSystem, 1), True, False)
+		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
+		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
 	EndIf
 	
-	
-	
-	; for CFS we do the exact same as desktops -- then lace it.
-	; we make one big big big big assumption, because i dont think theres another way to check
-	; and that is that the system drive is disk 1.
-	
 	If $strName == "CFS" Then
-		$outSetPartActive = RunWait("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "X:\", @SW_SHOWNORMAL)
-		If ($outSetPartActive = 0) And (@error <> 0) Then
-			MsgBox(0, "Error!", "Failed to set active partition.")
+		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then
 			Return 0
 		EndIf
-		$outMBRFix = RunWait("X:\Program Files\Grubinst\grubinst.exe (hd0)", "X:\", @SW_SHOWNORMAL)
-		If ($outMBRFix = 0) And (@error <> 0) Then
-			MsgBox(0, "Error!", "Failed to apply Grub MBR.")
+		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then
 			Return 0
-		EndIf
+		EndIf		
+;~ 		$outSetPartActive = RunWait("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "X:\", @SW_SHOWNORMAL)
+;~ 		If ($outSetPartActive = 0) And (@error <> 0) Then
+;~ 			MsgBox(0, "Error!", "Failed to set active partition.")
+;~ 			Return 0
+;~ 		EndIf
+;~ 		$outMBRFix = RunWait("X:\Program Files\Grubinst\grubinst.exe (hd0)", "X:\", @SW_SHOWNORMAL)
+;~ 		If ($outMBRFix = 0) And (@error <> 0) Then
+;~ 			MsgBox(0, "Error!", "Failed to apply Grub MBR.")
+;~ 			Return 0
+;~ 		EndIf
 	EndIf
 	
 	If $strName <> "CFS" Then
-		$outBCDBoot = RunWait("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "X:\", @SW_SHOWNORMAL)
-		If ($outBCDBoot = 0) And (@error <> 0) Then
-			MsgBox(0, "Error!", "Failed to fix Bootsect")
+		If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") Then
 			Return 0
 		EndIf
+;~ 		$outBCDBoot = RunWait("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "X:\", @SW_SHOWNORMAL)
+;~ 		If ($outBCDBoot = 0) And (@error <> 0) Then
+;~ 			MsgBox(0, "Error!", "Failed to fix Bootsect")
+;~ 			Return 0
+;~ 		EndIf
 	EndIf
 	
 	If FileExists($drvSystem & "Build") Then
@@ -362,9 +419,21 @@ Func EraseDownloadApplyWIM($strName)
 		DirRemove($drvData & $strName, True)
 		DirRemove($drvData & ".aria2", True)
 		FileDelete($drvData & $strName & ".torrent")
-		MsgBox(0, "Error.", "Something went screwy -- dont know what.")
+		MsgBox(16, "Error.", "Something went screwy -- dont know what.")
 		Return 0
 	EndIf	
+EndFunc
+
+Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
+	; heh.
+	Local $outCmd
+	$outCmd = RunWait($strCmd, $strPath, @SW_SHOWNORMAL)
+	If ($outCmd = 0) And (@error <> 0) Then
+		MsgBox(16, "Error", $strErrorMsgBox)
+		Return 0
+	Else
+		Return 1
+	EndIf
 EndFunc
 
 Func EraseDownloadImage($strName)
