@@ -364,6 +364,60 @@ Func EraseDownloadApplyWIM($strName)
 	EndIf	
 EndFunc
 
+Func CreateBCDStore($strDrive)
+	; This Function creates a blank bcd store from scratch on the specified drive, and also copies the bcd files.
+	RunWaitCheck("attrib -S -H -R " & $strDrive & "Boot\BCD", "Failed to remove BCD Attributes", $strDrive & "Windows\System32")
+	FileDelete($strDrive & "Boot\BCD")
+	RunWaitCheck("bcdedit /createstore " & $strDrive & "boot\bcd.temp", "Failed to create temporary BCD store", $strDrive & "Windows\System32")
+	RunWaitCheck("bcdedit /store " & $strDrive & "boot\bcd.temp /create {bootmgr} /d ""Windows Boot Manager""", "Failed to create bootmgr entry in BCD store.", $strDrive & "Windows\System32")
+	RunWaitCheck("bcdedit /import " & $strDrive & "boot\bcd.temp", "Failed to import BCD store.", $strDrive & "Windows\System32")
+	RunWaitCheck("bcdedit /set {bootmgr} device partition=" & StringLeft($strDrive, 2), "Failed to set BCD partition.", $strDrive & "Windows\System32")
+	RunWaitCheck("bcdedit /set {bootmgr} locale en-US", "Failed to set locale.", $strDrive & "Windows\System32")
+	RunWaitCheck("bcdedit /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32")
+	; needs to run in C:\Windows\System32, assuming C: = the partition. this is because bcdedit is not in winpe by default.
+	FileDelete($strDrive & "boot\bcd.temp")
+	Local $bcdCreateOut = Run(@ComSpec & " /c bcdedit.exe /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
+	Local $line, $bcdOutStr
+	While 1
+		$line = StdoutRead($bcdCreateOut)
+		If @error Then ExitLoop
+		$bcdOutStr &= $line
+	Wend
+	Local $arrGuid = _StringBetween($bcdOutStr, "{", "}")
+	; should only be one result.
+	If StringLen($arrGuid[0]) <> 36 Then
+		MsgBox(16, "Error!", "Failed to create osloader?")
+		Return 0
+	EndIf
+	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER")
+	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER")
+	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} path \Windows\system32\winload.exe", "Failed to set winload path.")
+	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} systemroot \Windows", "Failed to set windows path.")
+	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} locale en-US", "Failed to set locale - osloader.")
+	RunWaitCheck("bcdedit /displayorder {" & $arrGuid[0] & "}", "Failed to set display order.")
+	RunWaitCheck("bcdedit /default {" & $arrGuid[0] & "}", "Failed to set default.")
+	#cs BCD Commands.
+	del C:\boot\bcd
+	bcdedit /createstore c:\boot\bcd.temp
+	bcdedit.exe /store c:\boot\bcd.temp /create {bootmgr} /d "Windows Boot Manager"
+	bcdedit.exe /import c:\boot\bcd.temp
+	bcdedit.exe /set {bootmgr} device partition=C:
+	bcdedit.exe /set {bootmgr} locale en-US
+	bcdedit.exe /timeout 10
+	del c:\boot\bcd.temp
+	--- OS --
+	bcdedit.exe /create /d "Windows 7 Enterprise Edition" /application osloader
+	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} device partition=C:
+	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} osdevice partition=C:
+	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} path \Windows\system32\winload.exe
+	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} systemroot \Windows
+	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} locale en-US
+	--- DISPLAY --
+	bcdedit.exe /displayorder {c0dfc4fa-cb21-11dc-81bf-005056c00008}
+	bcdedit.exe /default {c0dfc4fa-cb21-11dc-81bf-005056c00008}
+	#ce
+EndFunc
+
 Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 	; Function that all error checking is done in.
 	; **********************************************
