@@ -1,0 +1,62 @@
+
+/Drivers
+/Program Files/Ghost/GhConfig32.exe
+/Program Files/Ghost/GhConfig64.exe
+/Program Files/Ghost/ghDplyAw32.exe
+/Program Files/Ghost/ghost32.exe
+/Program Files/Ghost/Ghost64.exe
+/Program Files/Ghost/Ghostexp.exe
+/Program Files/Ghost/GhostImageFile.dll
+/Program Files/Ghost/GhRegEdit32.exe
+/Program Files/Ghost/GhRegEdit64.exe
+/Program Files/Ghost/GhWalk32.exe
+/Program Files/Ghost/gdisk32.exe
+/Program Files/Ghost/Gdisk64.exe
+/Program Files/MBRFix/MbrFix.htm
+/Program Files/MBRFix/MbrFix64.exe
+/Program Files/MBRFix/MbrFix.exe
+/Program Files/ExplorerPlusPlus/Explorer++.exe
+/CURRENT-x86
+/CURRENT-x64
+/Code/AyrSHSDeploy/AyrSHSDeploy.exe
+/Code/AyrSHSDeploy/AyrSHSDeploy2.exe
+/Code/AyrSHSDeploy
+/Program Files/DETA/comctl32.dll
+/Program Files/DETA/COMCTL32.OCX
+/Program Files/DETA/COMDLG32.DEP
+/Program Files/DETA/comdlg32.dll
+/Program Files/DETA/comdlg32.ocx
+/Program Files/DETA/diskpartActive.txt
+/Program Files/DETA/diskpartAyrSHS.txt
+/Program Files/DETA/diskpartP.txt
+/Program Files/DETA/diskpartQ.txt
+/Program Files/DETA/diskpartSystem.txt
+/Program Files/DETA/Notes.txt
+/Program Files/DETA/TABCTL32.DEP
+/Program Files/DETA/TABCTL32.OCX
+/Program Files/DETA/vb6inst.exe
+/Program Files/DETA/wsBuild.exe
+/Program Files/DETA/AyrSHSDeploy.exe
+/Program Files/DETA/AyrSHSDeploy.old.exe
+/Program Files/DETA/COMCT232.DEP
+/Program Files/DETA/COMCT232.OCX
+/Program Files/DETA/COMCT332.DEP
+/Program Files/DETA/comct332.ocx
+/Program Files/DETA/COMCT332.SRG
+/Program Files/DETA/COMCTL.SRG
+/Program Files/DETA/COMCTL2.SRG
+/Program Files/DETA/COMCTL32.DEP
+/System32/Servicing
+/System32/bcdboot.exe
+/System32/gimagex.exe
+/System32/imagex.exe
+/System32/intlcfg.exe
+/System32/oscdimg.exe
+/System32/README.html
+/System32/ssshim.dll
+/System32/wdsmcast.exe
+/System32/wimgapi.dll
+/System32/wimmount.inf
+/System32/wimmount.sys
+/System32/WimMountInstall.exe
+/System32/wimserv.exe

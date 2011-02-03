@@ -1,0 +1,8 @@
+This is my ImagePE/BTDeploy project.  To use, drop the ghost files in Program Files\Ghost,
+then the imagex files in System32 [so you have System32/Servicing and imagex.exe in system32].
+Doesn't matter if you duplicate files, as wim's only contain one instance of each file.
+
+Modify ImagePE.BAT to add your drivers as per your requirements.
+
+Ignore any specific stuff to my network [ip addresses].  This was a script i made for work,
+that i completed in my own time [for copyright reasons].
