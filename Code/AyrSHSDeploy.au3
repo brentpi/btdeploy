@@ -1,3 +1,8 @@
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_outfile=R:\Work\ImagePE\Program Files\DETA\AyrSHSDeploy.exe
+#AutoIt3Wrapper_UseX64=n
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
+
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
 #include <GUIConstantsEx.au3>
@@ -9,6 +14,7 @@
 #include <Array.au3>
 #include <Constants.au3>
 #include <String.au3>
+#include <Debug.au3>
 
 Opt("GUIOnEventMode", 1)
 #Region ### START Koda GUI section ### Form=r:\work\koda\forms\ayrshsdeploy.kxf
@@ -163,6 +169,7 @@ GUISetState(@SW_SHOW)
 
 Global $fnCFSGhost, $fnCFTGhost, $fnDesktopGhost
 Global $arrAlphabet[26] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+_DebugSetup("BTDeploy Debug Output", True)
 ; ******************************************************************
 ; UPDATE WITH YOUR OWN DEPLOYMENT HOST.
 ; THIS IS WHERE YOUR TORRENTS ARE.
@@ -170,6 +177,7 @@ Global $arrAlphabet[26] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","
 ; Global Const $strDeploymentHost = "http://10.148.44.3/deployment/"
 ; Global Const $strDeploymentHost = "http://brentp.net/deployment/"
 Global Const $strDeploymentHost = "http://drop.edgiest.net/brent/"
+_DebugReportVar("strDeploymentHost", $strDeploymentHost)
 ; *******************************************************************
 
 While 1
@@ -193,11 +201,12 @@ WEnd
 
 Func PartitionMachine($strType, $bEnableOutput = True)
 	Local $outDownload, $outPartition
-	
+
 	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=X:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strType & "/disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
 	If ($outDownload = 0) And (@error <> 0) Then
 		If $bEnableOutput Then
-			MsgBox(0, "Download Failed", "Download of partition info failed.")
+			;MsgBox(0, "Download Failed", "Download of partition info failed.")
+			_DebugReport("Download of partition script failed.", True)
 		EndIf
 		Return 0
 	EndIf
@@ -206,13 +215,15 @@ Func PartitionMachine($strType, $bEnableOutput = True)
 	$outPartition = RunWait("X:\Program Files\Ghost\Gdisk32.exe 1 /BATCH:X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
 	If ($outPartition = 0) And (@error <> 0) Then
 		If $bEnableOutput Then
-			MsgBox(0, "Error", "Partitioning failed.  See Gdisk32 for more info.")
+			;MsgBox(0, "Error", "Partitioning failed.  See Gdisk32 for more info.")
+			_DebugReport("Partitioning failed. See GDisk32.", True)
 		EndIf
 		Return 0
 	EndIf
-	
+
 	If $bEnableOutput Then
-		MsgBox(0, "Success!", "Partitioned machine!")
+		_DebugReport("Successfully partitioned drive.")
+		;MsgBox(0, "Success!", "Partitioned machine!")
 	EndIf
 	Return 1
 EndFunc
@@ -224,10 +235,12 @@ Func FindDriveByLabel($strLabel)
 	Do
 		$curDrive = DriveGetLabel($arrAlphabet[$curIndex] & ":\")
 		If $curDrive == $strLabel Then
+			_DebugReport("FindDriveByLabel: " & $strLabel & " = " & $arrAlphabet[$curIndex] & ":\")
 			Return $arrAlphabet[$curIndex] & ":\"
 		EndIf
 		$curIndex = $curIndex + 1
 	Until $curIndex = 26
+	_DebugReport("FindDriveByLabel: Could not find " & $strLabel)
 	Return ""
 EndFunc
 
@@ -237,17 +250,23 @@ Func EraseDownloadApplyWIM($strName)
 	Local $drvSystem, $drvHome, $drvRecovery, $drvData, $outSetPartActive
 
 	If PartitionMachine($strName, False) = 0 Then
-		MsgBox(16, "Error!", "Failed to partition machine.  Check download on server, or presence of gdisk32.")
+		_DebugReport("EraseDownloadApplyWIM: Failed to partition machine.  Check download on server, or presence of gdisk32.")
+		;MsgBox(16, "Error!", "Failed to partition machine.  Check download on server, or presence of gdisk32.")
 		Return 0
 	EndIf
-	
+
 	If $strName == "CFS" Then
 		$drvSystem = FindDriveByLabel("System")
 		$drvData = FindDriveByLabel("Data")
 		$drvHome = FindDriveByLabel("Home")
 		$drvRecovery = FindDriveByLabel("Reserved")
-		
+
 		If ($drvSystem == "") Or ($drvData == "") Or ($drvHome == "") Or ($drvRecovery == "") Then
+			_DebugReport("EraseDownloadApplyWIM: Failed to detect partitions.")
+			_DebugReportVar("drvSystem", $drvSystem)
+			_DebugReportVar("drvData", $drvData)
+			_DebugReportVar("drvHome", $drvHome)
+			_DebugReportVar("drvRecovery", $drvRecovery)
 			MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
 			Return 0
 		EndIf
@@ -256,77 +275,91 @@ Func EraseDownloadApplyWIM($strName)
 		$drvData = FindDriveByLabel("Data")
 		$drvRecovery = FindDriveByLabel("Reserved")
 		If ($drvSystem == "") Or ($drvData == "") Or ($drvRecovery == "") Then
+			_DebugReport("EraseDownloadApplyWIM: Failed to detect partitions.")
+			_DebugReportVar("drvSystem", $drvSystem)
+			_DebugReportVar("drvData", $drvData)
+			_DebugReportVar("drvRecovery", $drvRecovery)
 			MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
 			Return 0
 		EndIf
 	EndIf
-	
+
 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
 	If ($outTorrent = 0) And (@error <> 0) Then
 		; error in torrent download :(
+		_DebugReport("EraseDownloadApplyWIM: Error downloading torrent.  Download Location = " & $drvData)
 		MsgBox(16, "Error", "Error downloading torrent.  Tried to download to: " & $drvData)
 		Return 0
 	EndIf
-	
+
 	; ALL Images will be called "Image.WIM"
 	; ie: D:\CFS\Image.WIM
-	
+
 	If FileExists($drvData & $strName & "\Image.WIM") == 0 Then
 		; error in torrent DL?
+		_DebugReport("EraseDownloadApplyWIM: Image should be at: " & $drvData & $strName & "\Image.WIM but isnt.")
 		MsgBox(16, "Error!", "Image does not exist after download.")
 		Return 0
 	EndIf
-	
+
 	; Apply Image.
 	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 1 " & $drvSystem, "Error applying System partition") = 0 Then Return 0
-	
+
 	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 2 " & $drvRecovery, "Error applying Recovery partition") = 0 Then Return 0
-	
+
 	If $strName == "CFS" Then
 		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 4 " & $drvData, "Error applying Data partition") = 0 Then Return 0
 	Else
 		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvData, "Error applying Data partition") = 0 Then Return 0
 	EndIf
-	
+
 	If $strName == "CFS" Then
 		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvHome, "Failed to apply Home Partition") = 0 Then Return 0
 	EndIf
-	
+
 	; This part fixes the BCD.  Merge this code into the BCD Fix function when it is tested and proven mature.  Otherwise revert to old code.
 	; hopefully this is more precise.
-	
+
 	If $strName == "CFS" Then
 		; Unhide drives.
+		_DebugReportVar("drvHome Before", $drvHome)
+		_DebugReportVar("drvSystem Before", $drvSystem)
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "Failed to hide partition 1.")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "Failed to hide partition 3.")
-		$drvHome = FindDriveByLabel("Home") & ":\"
+		Sleep(5000)
+		$drvHome = FindDriveByLabel("Home")
+		_DebugReportVar("drvHome Stage 1", $drvHome)
 		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
 		If CreateBCDStore($drvHome) = 0 Then Return 0
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
-		$drvSystem = FindDriveByLabel("System") & ":\"
+		$drvSystem = FindDriveByLabel("System")
+		_DebugReportVar("drvSystem Stage 1", $drvHome)
 		If CreateBCDStore($drvSystem) = 0 Then Return 0
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
-		$drvHome = FindDriveByLabel("Home") & ":\"
-		$drvSystem = FindDriveByLabel("System") & ":\"
+		$drvHome = FindDriveByLabel("Home")
+		_DebugReportVar("drvHome Stage 2", $drvHome)
+		$drvSystem = FindDriveByLabel("System")
+		_DebugReportVar("drvSystem Stage 2", $drvHome)
 		; we are back to how we were before.
 	Else
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 		If CreateBCDStore($drvSystem) = 0 Then Return 0
 	EndIf
-	
+
 	If $strName == "CFS" Then
 		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
-		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0		
+		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
 	EndIf
-	
+
 	If $strName <> "CFS" Then
 		If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 	EndIf
-	
+
 	If FileExists($drvSystem & "Build") Then
+		_DebugReport("EraseDownloadApplyWIM: Successfully Imaged Drive!")
 		MsgBox(0, "Success!", "Imaged Drive!")
 		DirRemove($drvData & $strName, True)
 		DirRemove($drvData & ".aria2", True)
@@ -336,9 +369,10 @@ Func EraseDownloadApplyWIM($strName)
 		DirRemove($drvData & $strName, True)
 		DirRemove($drvData & ".aria2", True)
 		FileDelete($drvData & $strName & ".torrent")
+		_DebugReport("EraseDownloadApplyWIM: Something went wrong.  Check this log.")
 		MsgBox(16, "Error.", "Something went screwy -- dont know what.")
 		Return 0
-	EndIf	
+	EndIf
 EndFunc
 
 Func CreateBCDStore($strDrive)
@@ -362,7 +396,10 @@ Func CreateBCDStore($strDrive)
 	Wend
 	Local $arrGuid = _StringBetween($bcdOutStr, "{", "}")
 	; should only be one result.
-	If StringLen($arrGuid[0]) <> 36 Then
+	If IsArray($arrGuid) = 0 Or StringLen($arrGuid[0]) <> 36 Then
+		_DebugReportVar("arrGuid", $arrGuid)
+		_DebugReport("BCD Output: " & $bcdOutStr)
+		_DebugReport("Failed to create OSLOADER. See above")
 		MsgBox(16, "Error!", "Failed to create osloader?")
 		Return 0
 	EndIf
@@ -405,10 +442,12 @@ Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 	Local $outCmd
 	$outCmd = RunWait($strCmd, $strPath, @SW_SHOWNORMAL)
 	If ($outCmd = 0) And (@error <> 0) Then
+		_DebugReport($strErrorMsgBox, True)
 		MsgBox(16, "Error", $strErrorMsgBox)
 		Return 0
 	Else
 		Return 1
+		_DebugReport($strCmd & " SUCCESSFUL")
 	EndIf
 EndFunc
 
@@ -417,7 +456,7 @@ Func EraseDownloadImage($strName)
 	; OLD FUNCTION. TODO: UPDATE FOR WIMS.
 	; ******************************************************
 	Local $outDPart, $outDownload
-	
+
 	$outDPart = RunWait("X:\Windows\System32\diskpart.exe /s diskpartAyrSHS.txt", "X:\Program Files\DETA", @SW_SHOWNORMAL)
 	If $outDPart <> 0 Then
 		MsgBox(0, "Error", "Failed to wipe drive. Exiting.")
@@ -439,7 +478,7 @@ Func ApplyDownloadImage($strName)
 	EndIf
 	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=V:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", "V:\", @SW_SHOWNORMAL)
 	; automatically loads torrent when downloaded. this blocks though which is a pain :\
-	
+
 	If $outDownload > 0 Then
 		; run ghost
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -PRESERVE=V:\" & $strName & ".gho -PRESERVEDIMAGEDELETEAFTERCLONE -PRESERVEDEST=1 -CLONE,mode=RESTORE,src=V:\" & $strName & ".gho,dst=1", "X:\", @SW_SHOWNORMAL)
@@ -448,7 +487,7 @@ EndFunc
 
 Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 	Local $strLetter, $outBootSect
-	
+
 	; lazy.
 	$strLetter = $strDrive
 
@@ -456,13 +495,13 @@ Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 		MsgBox(0, "Error", "Please enter a drive letter. No colon")
 		Return 1
 	EndIf
-	
+
 	RunWait("attrib -S -H -R " & $strLetter & ":\Boot\BCD", "X:\", @SW_SHOWNORMAL)
 	RunWait("attrib -S -H -R " & $strLetter & ":\Bootmgr", "X:\", @SW_SHOWNORMAL)
 	FileDelete($strLetter & ":\Bootmgr")
 	FileDelete($strLetter & ":\Boot\BCD")
 	Local $bcdReturn = RunWait("bcdboot " & $strLetter & ":\Windows /s " & $strLetter & ":", "X:\", @SW_SHOWNORMAL)
-	
+
 	If $bFixSector == True Then
 		If $bCFSWipe == True Then
 			$outBootSect = RunWait("X:\Windows\System32\bootsect.exe /nt60 " & $strLetter & ":\ /FORCE", "X:\", @SW_SHOWNORMAL)
@@ -474,7 +513,7 @@ Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 			Return 0
 		EndIf
 	EndIf
-	
+
 	If $bcdReturn = 0 Then
 		MsgBox(0, "Notice:", "Completed BCD Repair successfully", 5)
 		Return 0
@@ -483,13 +522,13 @@ Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 		Return 1
 	EndIf
 EndFunc
-	
+
 Func btnBCDFixClick()
 	Local $strLetter
-	
+
 	$strLetter = GUICtrlRead($txtBCDDrive)
 	FixBCDDrive($strLetter, False, False)
-	
+
 EndFunc
 
 Func btnCFSSelectGhostImageClick()
@@ -758,7 +797,7 @@ EraseDownloadApplyWIM("Desktop")
 EndFunc
 
 Func btnRunExplorerClick()
-Run("X:\Program Files\ExplorerPlusPlus\Explorer++.exe", "X:\", @SW_SHOWNORMAL)
+	Run("X:\Program Files\ExplorerPlusPlus\Explorer++.exe", "X:\", @SW_SHOWNORMAL)
 EndFunc
 
 Func txtCFSGhostSessionNameChange()

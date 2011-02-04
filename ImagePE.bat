@@ -19,6 +19,7 @@ dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\drivers\inte
 dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\VBoxGuest\VBoxGuest.inf"
 dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\VBoxMouse\VBoxMouse.inf"
 dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\VBoxVideo\VBoxVideo.inf"
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\NetKVM\Vista\x86\netkvm.inf"
 
 dism /image:%WPEDIR%-x86\mount /Add-Package /PackagePath:"%AIKPATH%\Tools\PETools\x86\WinPE_FPs\WinPE-Scripting.cab"
 dism /image:%WPEDIR%-x86\mount /Add-Package /PackagePath:"%AIKPATH%\Tools\PETools\x86\WinPE_FPs\en-us\WinPE-Scripting_en-us.cab"
@@ -38,13 +39,11 @@ del %WPEDIR%-x64\iso\boot\bootfix.bin
 dism /Mount-WIM /WimFile:"%WPEDIR%-x64\iso\sources\boot.wim" /index:1 /MountDir:"%WPEDIR%-x64\mount"
 
 dism /image:%WPEDIR%-x64\mount /add-driver /driver:"R:\Work\ImagePE\drivers\intel\sata\iaahci.inf"
-
-dism /image:%WPEDIR%-x64\mount /Add-Package /PackagePath:"%AIKPATH%\Tools\PETools\x86\WinPE_FPs\WinPE-Scripting.cab"
-dism /image:%WPEDIR%-x64\mount /Add-Package /PackagePath:"%AIKPATH%\Tools\PETools\x86\WinPE_FPs\en-us\WinPE-Scripting_en-us.cab"
-
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\NetKVM\Vista\amd64\netkvm.inf"
 
 xcopy "%WPEDIR%\..\system32" "%WPEDIR%-x64\mount\windows\system32" /e /v /i /h /r /y /z
 xcopy "%WPEDIR%\..\Program Files" "%WPEDIR%-x64\mount\Program Files" /e /v /i /h /r /y /z
 
 dism /unmount-wim /Mountdir:%WPEDIR%-x64\mount /commit
 oscdimg -n -lIMAGE_PE -b%WPEDIR%-x64\etfsboot.com %WPEDIR%-x64\ISO %WPEDIR%-x64\winpe_x64.iso
+cd ..
