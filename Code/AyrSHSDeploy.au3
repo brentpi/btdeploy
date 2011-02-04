@@ -302,19 +302,11 @@ Func EraseDownloadApplyWIM($strName)
 		$drvHome = FindDriveByLabel("Home") & ":\"
 		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
 		If CreateBCDStore($drvHome) = 0 Then Return 0
-;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvHome, 2), "Error writing bootmgr location on Home")
-;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} device partition=" & StringLeft($drvHome, 2), "Error writing device location on Home")
-;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvHome, 2), "Error writing osdevice location on Home")
-;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
 		$drvSystem = FindDriveByLabel("System") & ":\"
 		If CreateBCDStore($drvSystem) = 0 Then Return 0
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
 		$drvHome = FindDriveByLabel("Home") & ":\"
@@ -323,10 +315,6 @@ Func EraseDownloadApplyWIM($strName)
 	Else
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 		If CreateBCDStore($drvSystem) = 0 Then Return 0
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
-;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
 	EndIf
 	
 	If $strName == "CFS" Then
