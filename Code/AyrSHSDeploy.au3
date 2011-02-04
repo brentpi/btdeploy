@@ -167,9 +167,9 @@ Global $arrAlphabet[26] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","
 ; UPDATE WITH YOUR OWN DEPLOYMENT HOST.
 ; THIS IS WHERE YOUR TORRENTS ARE.
 ; ******************************************************************
-Global Const $strDeploymentHost = "http://10.148.44.3/deployment/"
+; Global Const $strDeploymentHost = "http://10.148.44.3/deployment/"
 ; Global Const $strDeploymentHost = "http://brentp.net/deployment/"
-; Global Const $strDeploymentHost = "http://drop.edgiest.net/brent/"
+Global Const $strDeploymentHost = "http://drop.edgiest.net/brent/"
 ; *******************************************************************
 
 While 1
@@ -224,7 +224,7 @@ Func FindDriveByLabel($strLabel)
 	Do
 		$curDrive = DriveGetLabel($arrAlphabet[$curIndex] & ":\")
 		If $curDrive == $strLabel Then
-			Return $arrAlphabet[$curIndex]
+			Return $arrAlphabet[$curIndex] & ":\"
 		EndIf
 		$curIndex = $curIndex + 1
 	Until $curIndex = 26
@@ -254,7 +254,7 @@ Func EraseDownloadApplyWIM($strName)
 	Else
 		$drvSystem = FindDriveByLabel("System")
 		$drvData = FindDriveByLabel("Data")
-		$drvRecovery = FindDriveByLabel("Recovery")
+		$drvRecovery = FindDriveByLabel("Reserved")
 		If ($drvSystem == "") Or ($drvData == "") Or ($drvRecovery == "") Then
 			MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
 			Return 0
@@ -264,7 +264,7 @@ Func EraseDownloadApplyWIM($strName)
 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
 	If ($outTorrent = 0) And (@error <> 0) Then
 		; error in torrent download :(
-		MsgBox(16, "Error", "Error downloading torrent.  See Aria2c for more information")
+		MsgBox(16, "Error", "Error downloading torrent.  Tried to download to: " & $drvData)
 		Return 0
 	EndIf
 	
