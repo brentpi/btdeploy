@@ -7,6 +7,8 @@
 #include <WinAPI.au3>
 #include <NamedPipes.au3>
 #include <Array.au3>
+#include <Constants.au3>
+#include <String.au3>
 
 Opt("GUIOnEventMode", 1)
 #Region ### START Koda GUI section ### Form=r:\work\koda\forms\ayrshsdeploy.kxf
@@ -231,7 +233,7 @@ EndFunc
 
 Func EraseDownloadApplyWIM($strName)
 	Local $outDownload, $outPartition, $outTorrent, $outApplySystem, $outApplyRecovery
-	Local $outApplyData, $outApplyHome, $outBCDBoot, $outBootSect, $curIndex, $outMBRFix
+	Local $outApplyData, $outApplyHome
 	Local $drvSystem, $drvHome, $drvRecovery, $drvData, $outSetPartActive
 
 	If PartitionMachine($strName, False) = 0 Then
@@ -246,7 +248,7 @@ Func EraseDownloadApplyWIM($strName)
 		$drvRecovery = FindDriveByLabel("Reserved")
 		
 		If ($drvSystem == "") Or ($drvData == "") Or ($drvHome == "") Or ($drvRecovery == "") Then
-			MsgBox(0, "Error", "Failed to detect partitions. Please try again.")
+			MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
 			Return 0
 		EndIf
 	Else
@@ -254,7 +256,7 @@ Func EraseDownloadApplyWIM($strName)
 		$drvData = FindDriveByLabel("Data")
 		$drvRecovery = FindDriveByLabel("Recovery")
 		If ($drvSystem == "") Or ($drvData == "") Or ($drvRecovery == "") Then
-			MsgBox(0, "Error", "Failed to detect partitions. Please try again.")
+			MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
 			Return 0
 		EndIf
 	EndIf
@@ -262,7 +264,7 @@ Func EraseDownloadApplyWIM($strName)
 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
 	If ($outTorrent = 0) And (@error <> 0) Then
 		; error in torrent download :(
-		MsgBox(0, "Error", "Error downloading torrent.  See Aria2c for more information")
+		MsgBox(16, "Error", "Error downloading torrent.  See Aria2c for more information")
 		Return 0
 	EndIf
 	
@@ -271,33 +273,23 @@ Func EraseDownloadApplyWIM($strName)
 	
 	If FileExists($drvData & $strName & "\Image.WIM") == 0 Then
 		; error in torrent DL?
-		MsgBox(0, "Error!", "Image does not exist after download.")
+		MsgBox(16, "Error!", "Image does not exist after download.")
 		Return 0
 	EndIf
 	
 	; Apply Image.
-	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 1 " & $drvSystem, "Error applying System partition") = 0 Then
-		Return 0
-	EndIf
+	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 1 " & $drvSystem, "Error applying System partition") = 0 Then Return 0
 	
-	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 2 " & $drvRecovery, "Error applying Recovery partition") = 0 Then
-		Return 0
-	EndIf
+	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 2 " & $drvRecovery, "Error applying Recovery partition") = 0 Then Return 0
 	
 	If $strName == "CFS" Then
-		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 4 " & $drvData, "Error applying Data partition") = 0 Then
-			Return 0
-		EndIf
+		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 4 " & $drvData, "Error applying Data partition") = 0 Then Return 0
 	Else
-		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvData, "Error applying Data partition") = 0 Then
-			Return 0
-		EndIf
+		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvData, "Error applying Data partition") = 0 Then Return 0
 	EndIf
 	
 	If $strName == "CFS" Then
-		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvHome, "Failed to apply Home Partition") = 0 Then
-			Return 0
-		EndIf
+		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvHome, "Failed to apply Home Partition") = 0 Then Return 0
 	EndIf
 	
 	; This part fixes the BCD.  Merge this code into the BCD Fix function when it is tested and proven mature.  Otherwise revert to old code.
@@ -309,18 +301,20 @@ Func EraseDownloadApplyWIM($strName)
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "Failed to hide partition 3.")
 		$drvHome = FindDriveByLabel("Home") & ":\"
 		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
-		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvHome, 2), "Error writing bootmgr location on Home")
-		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} device partition=" & StringLeft($drvHome, 2), "Error writing device location on Home")
-		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvHome, 2), "Error writing osdevice location on Home")
-		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on Home")
+		If CreateBCDStore($drvHome) = 0 Then Return 0
+;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvHome, 2), "Error writing bootmgr location on Home")
+;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} device partition=" & StringLeft($drvHome, 2), "Error writing device location on Home")
+;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvHome, 2), "Error writing osdevice location on Home")
+;~ 		RunWaitCheck("bcdedit /store " & $drvHome & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
 		$drvSystem = FindDriveByLabel("System") & ":\"
+		If CreateBCDStore($drvSystem) = 0 Then Return 0
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
 		$drvHome = FindDriveByLabel("Home") & ":\"
@@ -328,25 +322,20 @@ Func EraseDownloadApplyWIM($strName)
 		; we are back to how we were before.
 	Else
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
-		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
+		If CreateBCDStore($drvSystem) = 0 Then Return 0
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($drvSystem, 2), "Error writing bootmgr location on MOE")
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} device partition=" & StringLeft($drvSystem, 2), "Error writing device location on MOE")
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} osdevice partition=" & StringLeft($drvSystem, 2), "Error writing osdevice location on MOE")
+;~ 		RunWaitCheck("bcdedit /store " & $drvSystem & "Boot\BCD /set {default} description ""Windows 7 Enterprise""", "Error writing description on MOE")
 	EndIf
 	
 	If $strName == "CFS" Then
-		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then
-			Return 0
-		EndIf
-		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then
-			Return 0
-		EndIf		
+		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
+		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0		
 	EndIf
 	
 	If $strName <> "CFS" Then
-		If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") = 0 Then
-			Return 0
-		EndIf
+		If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 	EndIf
 	
 	If FileExists($drvSystem & "Build") Then
@@ -368,12 +357,12 @@ Func CreateBCDStore($strDrive)
 	; This Function creates a blank bcd store from scratch on the specified drive, and also copies the bcd files.
 	RunWaitCheck("attrib -S -H -R " & $strDrive & "Boot\BCD", "Failed to remove BCD Attributes", $strDrive & "Windows\System32")
 	FileDelete($strDrive & "Boot\BCD")
-	RunWaitCheck("bcdedit /createstore " & $strDrive & "boot\bcd.temp", "Failed to create temporary BCD store", $strDrive & "Windows\System32")
-	RunWaitCheck("bcdedit /store " & $strDrive & "boot\bcd.temp /create {bootmgr} /d ""Windows Boot Manager""", "Failed to create bootmgr entry in BCD store.", $strDrive & "Windows\System32")
-	RunWaitCheck("bcdedit /import " & $strDrive & "boot\bcd.temp", "Failed to import BCD store.", $strDrive & "Windows\System32")
-	RunWaitCheck("bcdedit /set {bootmgr} device partition=" & StringLeft($strDrive, 2), "Failed to set BCD partition.", $strDrive & "Windows\System32")
-	RunWaitCheck("bcdedit /set {bootmgr} locale en-US", "Failed to set locale.", $strDrive & "Windows\System32")
-	RunWaitCheck("bcdedit /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32")
+	If RunWaitCheck("bcdedit /createstore " & $strDrive & "boot\bcd.temp", "Failed to create temporary BCD store", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "boot\bcd.temp /create {bootmgr} /d ""Windows Boot Manager""", "Failed to create bootmgr entry in BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /import " & $strDrive & "boot\bcd.temp", "Failed to import BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /set {bootmgr} device partition=" & StringLeft($strDrive, 2), "Failed to set BCD partition.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /set {bootmgr} locale en-US", "Failed to set locale.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32") = 0 Then Return 0
 	; needs to run in C:\Windows\System32, assuming C: = the partition. this is because bcdedit is not in winpe by default.
 	FileDelete($strDrive & "boot\bcd.temp")
 	Local $bcdCreateOut = Run(@ComSpec & " /c bcdedit.exe /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
@@ -389,13 +378,14 @@ Func CreateBCDStore($strDrive)
 		MsgBox(16, "Error!", "Failed to create osloader?")
 		Return 0
 	EndIf
-	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER")
-	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER")
-	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} path \Windows\system32\winload.exe", "Failed to set winload path.")
-	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} systemroot \Windows", "Failed to set windows path.")
-	RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} locale en-US", "Failed to set locale - osloader.")
-	RunWaitCheck("bcdedit /displayorder {" & $arrGuid[0] & "}", "Failed to set display order.")
-	RunWaitCheck("bcdedit /default {" & $arrGuid[0] & "}", "Failed to set default.")
+	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} path \Windows\system32\winload.exe", "Failed to set winload path.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} systemroot \Windows", "Failed to set windows path.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} locale en-US", "Failed to set locale - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /displayorder {" & $arrGuid[0] & "}", "Failed to set display order.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /default {" & $arrGuid[0] & "}", "Failed to set default.", $strDrive & "Windows\System32") = 0 Then Return 0
+	Return 1
 	#cs BCD Commands.
 	del C:\boot\bcd
 	bcdedit /createstore c:\boot\bcd.temp
