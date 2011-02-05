@@ -326,7 +326,7 @@ Func EraseDownloadApplyWIM($strName)
 		_DebugReportVar("drvSystem Before", $drvSystem)
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "Failed to hide partition 1.")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "Failed to hide partition 3.")
-		Sleep(5000)
+		Sleep(10000)
 		$drvHome = FindDriveByLabel("Home")
 		_DebugReportVar("drvHome Stage 1", $drvHome)
 		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
@@ -334,13 +334,16 @@ Func EraseDownloadApplyWIM($strName)
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
 		$drvSystem = FindDriveByLabel("System")
+		Sleep(10000)
 		_DebugReportVar("drvSystem Stage 1", $drvHome)
 		If CreateBCDStore($drvSystem) = 0 Then Return 0
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
 		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
+		Sleep(10000)
 		$drvHome = FindDriveByLabel("Home")
 		_DebugReportVar("drvHome Stage 2", $drvHome)
+		Sleep(3000)
 		$drvSystem = FindDriveByLabel("System")
 		_DebugReportVar("drvSystem Stage 2", $drvHome)
 		; we are back to how we were before.
@@ -387,7 +390,8 @@ Func CreateBCDStore($strDrive)
 	If RunWaitCheck("bcdedit /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32") = 0 Then Return 0
 	; needs to run in C:\Windows\System32, assuming C: = the partition. this is because bcdedit is not in winpe by default.
 	FileDelete($strDrive & "boot\bcd.temp")
-	Local $bcdCreateOut = Run(@ComSpec & " /c bcdedit.exe /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
+	;Local $bcdCreateOut = Run(@ComSpec & " /c bcdedit.exe /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
+	Local $bcdCreateOut = RunWait("bcdedit /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
 	Local $line, $bcdOutStr
 	While 1
 		$line = StdoutRead($bcdCreateOut)
@@ -395,6 +399,7 @@ Func CreateBCDStore($strDrive)
 		$bcdOutStr &= $line
 	Wend
 	Local $arrGuid = _StringBetween($bcdOutStr, "{", "}")
+	_DebugReportVar("arrGuid", $arrGuid)
 	; should only be one result.
 	If IsArray($arrGuid) = 0 Or StringLen($arrGuid[0]) <> 36 Then
 		_DebugReportVar("arrGuid", $arrGuid)
@@ -446,8 +451,8 @@ Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 		MsgBox(16, "Error", $strErrorMsgBox)
 		Return 0
 	Else
-		Return 1
 		_DebugReport($strCmd & " SUCCESSFUL")
+		Return 1
 	EndIf
 EndFunc
 
