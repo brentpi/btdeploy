@@ -390,8 +390,11 @@ Func CreateBCDStore($strDrive)
 	If RunWaitCheck("bcdedit /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32") = 0 Then Return 0
 	; needs to run in C:\Windows\System32, assuming C: = the partition. this is because bcdedit is not in winpe by default.
 	FileDelete($strDrive & "boot\bcd.temp")
-	;Local $bcdCreateOut = Run(@ComSpec & " /c bcdedit.exe /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
-	Local $bcdCreateOut = RunWait("bcdedit /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
+	If FileExists($strDrive & "Boot\BCD") = 0 Then
+		_DebugReport("Cant find BCD store..", True)
+	EndIf
+
+	Local $bcdCreateOut = RunWait("bcdedit /store " & $strDrive & "Boot\BCD /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
 	Local $line, $bcdOutStr
 	While 1
 		$line = StdoutRead($bcdCreateOut)
@@ -408,13 +411,13 @@ Func CreateBCDStore($strDrive)
 		MsgBox(16, "Error!", "Failed to create osloader?")
 		Return 0
 	EndIf
-	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} path \Windows\system32\winload.exe", "Failed to set winload path.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} systemroot \Windows", "Failed to set windows path.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /set {" & $arrGuid[0] & "} locale en-US", "Failed to set locale - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /displayorder {" & $arrGuid[0] & "}", "Failed to set display order.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /default {" & $arrGuid[0] & "}", "Failed to set default.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} path \Windows\system32\winload.exe", "Failed to set winload path.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} systemroot \Windows", "Failed to set windows path.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} locale en-US", "Failed to set locale - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /displayorder {" & $arrGuid[0] & "}", "Failed to set display order.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /default {" & $arrGuid[0] & "}", "Failed to set default.", $strDrive & "Windows\System32") = 0 Then Return 0
 	Return 1
 	#cs BCD Commands.
 	del C:\boot\bcd
