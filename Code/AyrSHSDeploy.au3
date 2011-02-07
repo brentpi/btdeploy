@@ -322,42 +322,19 @@ Func EraseDownloadApplyWIM($strName)
 
 	If $strName == "CFS" Then
 		; Unhide drives.
- 		_DebugReportVar("drvHome Before", $drvHome)
- 		_DebugReportVar("drvSystem Before", $drvSystem)
- 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "Failed to hide partition 1.")
- 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "Failed to hide partition 3.")
- 		;Sleep(10000)
- 		;$drvHome = FindDriveByLabel("Home")
- 		;_DebugReportVar("drvHome Stage 1", $drvHome)
  		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
  		If CreateBCDStore($drvHome) = 0 Then Return 0
- 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
- 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
- 		;$drvSystem = FindDriveByLabel("System")
- 		;Sleep(10000)
- 		_DebugReportVar("drvSystem Stage 1", $drvHome)
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
  		If CreateBCDStore($drvSystem) = 0 Then Return 0
- 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
- 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
- 		;Sleep(10000)
- 		;$drvHome = FindDriveByLabel("Home")
- 		;_DebugReportVar("drvHome Stage 2", $drvHome)
- 		;Sleep(3000)
- 		;$drvSystem = FindDriveByLabel("System")
- 		_DebugReportVar("drvSystem Stage 2", $drvHome)
+		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
+		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
 		; we are back to how we were before.
 	Else
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 		; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot. Probably not for CFS though.
 		;If CreateBCDStore($drvSystem) = 0 Then Return 0
-	EndIf
-
-	If $strName == "CFS" Then
-		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
-		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
-	Else
-		If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
+		; If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
+		If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 	EndIf
 
 	If FileExists($drvSystem & "Build") Then
