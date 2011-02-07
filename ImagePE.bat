@@ -33,17 +33,17 @@ oscdimg -n -lIMAGE_PE -b%WPEDIR%-x86\etfsboot.com %WPEDIR%-x86\ISO %WPEDIR%-x86\
 
 REM -- X64 --
 
-call copype.cmd amd64 %WPEDIR%-x64
-copy %WPEDIR%-x64\winpe.wim %WPEDIR%-x64\ISO\sources\boot.wim
-del %WPEDIR%-x64\iso\boot\bootfix.bin
-dism /Mount-WIM /WimFile:"%WPEDIR%-x64\iso\sources\boot.wim" /index:1 /MountDir:"%WPEDIR%-x64\mount"
+REM call copype.cmd amd64 %WPEDIR%-x64
+REM copy %WPEDIR%-x64\winpe.wim %WPEDIR%-x64\ISO\sources\boot.wim
+REM del %WPEDIR%-x64\iso\boot\bootfix.bin
+REM dism /Mount-WIM /WimFile:"%WPEDIR%-x64\iso\sources\boot.wim" /index:1 /MountDir:"%WPEDIR%-x64\mount"
 
-dism /image:%WPEDIR%-x64\mount /add-driver /driver:"R:\Work\ImagePE\drivers\intel\sata\iaahci.inf"
-dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\NetKVM\Vista\amd64\netkvm.inf"
+REM dism /image:%WPEDIR%-x64\mount /add-driver /driver:"R:\Work\ImagePE\drivers\intel\sata\iaahci.inf"
+REM dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\NetKVM\Vista\amd64\netkvm.inf"
 
-xcopy "%WPEDIR%\..\system32" "%WPEDIR%-x64\mount\windows\system32" /e /v /i /h /r /y /z
-xcopy "%WPEDIR%\..\Program Files" "%WPEDIR%-x64\mount\Program Files" /e /v /i /h /r /y /z
+REM xcopy "%WPEDIR%\..\system32" "%WPEDIR%-x64\mount\windows\system32" /e /v /i /h /r /y /z
+REM xcopy "%WPEDIR%\..\Program Files" "%WPEDIR%-x64\mount\Program Files" /e /v /i /h /r /y /z
 
-dism /unmount-wim /Mountdir:%WPEDIR%-x64\mount /commit
-oscdimg -n -lIMAGE_PE -b%WPEDIR%-x64\etfsboot.com %WPEDIR%-x64\ISO %WPEDIR%-x64\winpe_x64.iso
+REM dism /unmount-wim /Mountdir:%WPEDIR%-x64\mount /commit
+REM oscdimg -n -lIMAGE_PE -b%WPEDIR%-x64\etfsboot.com %WPEDIR%-x64\ISO %WPEDIR%-x64\winpe_x64.iso
 cd ..

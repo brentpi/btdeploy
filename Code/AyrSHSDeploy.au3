@@ -322,42 +322,41 @@ Func EraseDownloadApplyWIM($strName)
 
 	If $strName == "CFS" Then
 		; Unhide drives.
-		_DebugReportVar("drvHome Before", $drvHome)
-		_DebugReportVar("drvSystem Before", $drvSystem)
-		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "Failed to hide partition 1.")
-		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "Failed to hide partition 3.")
-		Sleep(10000)
-		$drvHome = FindDriveByLabel("Home")
-		_DebugReportVar("drvHome Stage 1", $drvHome)
-		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
-		If CreateBCDStore($drvHome) = 0 Then Return 0
-		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
-		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
-		$drvSystem = FindDriveByLabel("System")
-		Sleep(10000)
-		_DebugReportVar("drvSystem Stage 1", $drvHome)
-		If CreateBCDStore($drvSystem) = 0 Then Return 0
+ 		_DebugReportVar("drvHome Before", $drvHome)
+ 		_DebugReportVar("drvSystem Before", $drvSystem)
+ 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:1", "Failed to hide partition 1.")
+ 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:3", "Failed to hide partition 3.")
+ 		;Sleep(10000)
+ 		;$drvHome = FindDriveByLabel("Home")
+ 		;_DebugReportVar("drvHome Stage 1", $drvHome)
+ 		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
+ 		If CreateBCDStore($drvHome) = 0 Then Return 0
+ 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /HIDE /P:4", "Error hiding Home")
+ 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
+ 		;$drvSystem = FindDriveByLabel("System")
+ 		;Sleep(10000)
+ 		_DebugReportVar("drvSystem Stage 1", $drvHome)
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
-		RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
-		Sleep(10000)
-		$drvHome = FindDriveByLabel("Home")
-		_DebugReportVar("drvHome Stage 2", $drvHome)
-		Sleep(3000)
-		$drvSystem = FindDriveByLabel("System")
-		_DebugReportVar("drvSystem Stage 2", $drvHome)
+ 		If CreateBCDStore($drvSystem) = 0 Then Return 0
+ 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4", "Error hiding Home")
+ 		;RunWaitCheck("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3", "Error unhiding MOE")
+ 		;Sleep(10000)
+ 		;$drvHome = FindDriveByLabel("Home")
+ 		;_DebugReportVar("drvHome Stage 2", $drvHome)
+ 		;Sleep(3000)
+ 		;$drvSystem = FindDriveByLabel("System")
+ 		_DebugReportVar("drvSystem Stage 2", $drvHome)
 		; we are back to how we were before.
 	Else
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-		If CreateBCDStore($drvSystem) = 0 Then Return 0
+		; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot. Probably not for CFS though.
+		;If CreateBCDStore($drvSystem) = 0 Then Return 0
 	EndIf
 
 	If $strName == "CFS" Then
 		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
 		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
-	EndIf
-
-	If $strName <> "CFS" Then
+	Else
 		If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 	EndIf
 
@@ -382,27 +381,63 @@ Func CreateBCDStore($strDrive)
 	; This Function creates a blank bcd store from scratch on the specified drive, and also copies the bcd files.
 	RunWaitCheck("attrib -S -H -R " & $strDrive & "Boot\BCD", "Failed to remove BCD Attributes", $strDrive & "Windows\System32")
 	FileDelete($strDrive & "Boot\BCD")
-	If RunWaitCheck("bcdedit /createstore " & $strDrive & "boot\bcd.temp", "Failed to create temporary BCD store", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /store " & $strDrive & "boot\bcd.temp /create {bootmgr} /d ""Windows Boot Manager""", "Failed to create bootmgr entry in BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /import " & $strDrive & "boot\bcd.temp", "Failed to import BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /set {bootmgr} device partition=" & StringLeft($strDrive, 2), "Failed to set BCD partition.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /set {bootmgr} locale en-US", "Failed to set locale.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /createstore " & $strDrive & "Boot\BCD", "Failed to create temporary BCD store", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /create {bootmgr} /d ""Windows Boot Manager""", "Failed to create bootmgr entry in BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
+	; If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /import " & $strDrive & "boot\bcd.temp", "Failed to import BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($strDrive, 2), "Failed to set BCD partition.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {bootmgr} locale en-US", "Failed to set locale.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32") = 0 Then Return 0
 	; needs to run in C:\Windows\System32, assuming C: = the partition. this is because bcdedit is not in winpe by default.
-	FileDelete($strDrive & "boot\bcd.temp")
-	If FileExists($strDrive & "Boot\BCD") = 0 Then
-		_DebugReport("Cant find BCD store..", True)
+	;If FileExists($strDrive & "Boot\BCD") = 0 Then
+	;	_DebugReport("Cant find BCD store..", True)
+	;EndIf
+	Local $bcdTries = 0
+	Do
+		$bcdTries = $bcdTries + 1
+		If $bcdTries > 300 Then
+			; we've been waiting 5 minutes...
+			_DebugReport("Attempted BCD check for 5 minutes... doesnt look like its going to work.  Failing gracefully.")
+			Return 0
+		EndIf
+		; we wait until then. Note: This section is a potential hang risk.
+		_DebugReport("Cant find BCD Store at '" & $strDrive & "Boot\BCD' Sleeping for 1 sec and trying again....")
+		Sleep(1000)
+	Until FileExists($strDrive & "Boot\BCD") = 1
+
+	FileDelete("X:\BCDOut.txt")
+
+	Local $bcdCreateOut = RunWait(@ComSpec & " /c bcdedit /store " & $strDrive & "Boot\BCD /create /d ""Windows 7 Enterprise Edition"" /application osloader > X:\BCDOut.txt 2>&1", $strDrive & "Windows\System32")
+	Local $line, $bcdOutStr, $bcdGuid
+
+	$bcdOutTxt = FileOpen("X:\BCDOut.txt", 0)
+
+	If $bcdOutTxt = -1 Then
+		_DebugReport("Failed to open BCD Output Text file.")
+		Return 0
 	EndIf
 
-	Local $bcdCreateOut = RunWait("bcdedit /store " & $strDrive & "Boot\BCD /create /d ""Windows 7 Enterprise Edition"" /application osloader", $strDrive & "Windows\System32", @SW_HIDE, $STDOUT_CHILD)
-	Local $line, $bcdOutStr
-	While 1
-		$line = StdoutRead($bcdCreateOut)
-		If @error Then ExitLoop
-		$bcdOutStr &= $line
-	Wend
-	Local $arrGuid = _StringBetween($bcdOutStr, "{", "}")
+	$contents = FileRead($bcdOutTxt)
+	_DebugReport("File contents: " & $contents)
+
+	FileClose($bcdOutTxt)
+
+;	While 1
+	;	$line = StdoutRead($bcdCreateOut)
+	;	Local $arrGuid = _StringBetween($line, "{", "}")
+		;_ArrayDisplay($arrGuid, "Array: GUID for BCD")
+		;_DebugReport($line)
+		;If @error Then ExitLoop
+;~ 		$iIndexBrace = StringInStr($line, "{")
+;~ 		If $iIndexBrace > 0 Then
+;~ 			$bcdGuid = StringMid($line, $iIndexBrace, 36)
+;~ 			_DebugReport("BCD: " & $line)
+;~ 			_DebugReportVar("bcdGuid", $bcdGuid)
+;~ 		EndIf
+;		$bcdOutStr &= $line
+	;Wend
+	Local $arrGuid = _StringBetween($contents, "{", "}")
 	_DebugReportVar("arrGuid", $arrGuid)
+	;_ArrayDisplay($arrGuid)
 	; should only be one result.
 	If IsArray($arrGuid) = 0 Or StringLen($arrGuid[0]) <> 36 Then
 		_DebugReportVar("arrGuid", $arrGuid)
@@ -410,14 +445,17 @@ Func CreateBCDStore($strDrive)
 		_DebugReport("Failed to create OSLOADER. See above")
 		MsgBox(16, "Error!", "Failed to create osloader?")
 		Return 0
+	Else
+		$bcdGuid = $arrGuid[0]
 	EndIf
-	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} path \Windows\system32\winload.exe", "Failed to set winload path.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} systemroot \Windows", "Failed to set windows path.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $arrGuid[0] & "} locale en-US", "Failed to set locale - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /displayorder {" & $arrGuid[0] & "}", "Failed to set display order.", $strDrive & "Windows\System32") = 0 Then Return 0
-	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /default {" & $arrGuid[0] & "}", "Failed to set default.", $strDrive & "Windows\System32") = 0 Then Return 0
+
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} path \Windows\system32\winload.exe", "Failed to set winload path.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} systemroot \Windows", "Failed to set windows path.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} locale en-US", "Failed to set locale - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /displayorder {" & $bcdGuid & "}", "Failed to set display order.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /default {" & $bcdGuid & "}", "Failed to set default.", $strDrive & "Windows\System32") = 0 Then Return 0
 	Return 1
 	#cs BCD Commands.
 	del C:\boot\bcd
@@ -535,7 +573,8 @@ Func btnBCDFixClick()
 	Local $strLetter
 
 	$strLetter = GUICtrlRead($txtBCDDrive)
-	FixBCDDrive($strLetter, False, False)
+	CreateBCDStore($strLetter & ":\")
+	;FixBCDDrive($strLetter, False, False)
 
 EndFunc
 
@@ -600,7 +639,7 @@ Func btnEDDesktopClick()
 	EraseDownloadImage("Desktop")
 EndFunc
 Func btnFixGrub4DosClick()
-	MsgBox(0, "Notice", "This feature is incomplete")
+	If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
 EndFunc
 Func btnImgCFSPWin7Click()
 $strSessionName = GuiCtrlRead($txtCFSGhostSessionName)
