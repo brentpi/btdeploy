@@ -5,7 +5,7 @@ select partition 2
 set id=07 override
 select partition 4
 set id=17 override
-assign letter=R
 select partition 3
 set id=07 override
 assign letter=C
+active

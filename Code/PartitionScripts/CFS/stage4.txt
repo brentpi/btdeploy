@@ -1,7 +1,6 @@
 select disk 0
 select partition 1
 set id=17 override
-assign letter=P
 select partition 2
 set id=07 override
 assign letter=S
@@ -11,4 +10,3 @@ assign letter=C
 active
 select partition 4
 set id=17 override
-assign letter=R

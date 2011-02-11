@@ -250,13 +250,11 @@ Func EraseDownloadApplyWIM($strName)
 	Local $outApplyData, $outApplyHome
 	Local $drvSystem, $drvHome, $drvRecovery, $drvData, $outSetPartActive
 
-#cs
 	If PartitionMachine($strName, False) = 0 Then
 		_DebugReport("EraseDownloadApplyWIM: Failed to partition machine.  Check download on server, or presence of gdisk32.")
 		;MsgBox(16, "Error!", "Failed to partition machine.  Check download on server, or presence of gdisk32.")
 		Return 0
 	EndIf
-#ce
 
 	If $strName == "CFS" Then
 		$drvSystem = FindDriveByLabel("System")
@@ -287,7 +285,7 @@ Func EraseDownloadApplyWIM($strName)
 		EndIf
 	EndIf
 
-#cs
+
 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
 	If ($outTorrent = 0) And (@error <> 0) Then
 		; error in torrent download :(
@@ -295,7 +293,6 @@ Func EraseDownloadApplyWIM($strName)
 		MsgBox(16, "Error", "Error downloading torrent.  Tried to download to: " & $drvData)
 		Return 0
 	EndIf
-#ce
 
 	; ALL Images will be called "Image.WIM"
 	; ie: D:\CFS\Image.WIM
@@ -327,6 +324,16 @@ Func EraseDownloadApplyWIM($strName)
 
 	If $strName == "CFS" Then
 		; Unhide drives.
+		RunWaitCheck("attrib -S -H -R " & $drvSystem & "Boot\BCD", "Failed to remove attributes on System BCD")
+		RunWaitCheck("attrib -S -H -R " & $drvHome & "Boot\BCD", "Failed to remove attributes on Home BCD")
+		FileDelete($drvSystem & "Boot\BCD")
+		FileDelete($drvHome & "Boot\BCD")
+		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:3", "Failed to activate System partition")
+		RunWaitCheck("bcdboot " & $drvSystem & "Windows /l en-us", "Failed to run bcdboot for system.")
+		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:4", "Failed to activate Home partition")
+		RunWaitCheck("bcdboot " & $drvHome & "Windows /l en-us", "Failed to run bcdboot for Home")
+		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:3", "Failed to activate System partition")
+		#cs
 		If (GrabFile($strDeploymentHost & $strName & "/stage2.txt", "X:\") = 0) Or (GrabFile($strDeploymentHost & $strName & "/stage3.txt", "X:\") = 0) Or (GrabFile($strDeploymentHost & $strName & "/stage4.txt", "X:\") = 0) Then
 			_DebugReport("Failed to DL partition scripts.")
 			Return 0
@@ -350,6 +357,7 @@ Func EraseDownloadApplyWIM($strName)
 		$drvData = FindDriveByLabel("Data")
 		$drvHome = FindDriveByLabel("Home")
 		$drvRecovery = FindDriveByLabel("Reserved")
+		#ce
 		;If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
 		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
 		; we are back to how we were before.
