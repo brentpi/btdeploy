@@ -1,5 +1,5 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_outfile=R:\Work\ImagePE\Program Files\DETA\AyrSHSDeploy.exe
+#AutoIt3Wrapper_Outfile=R:\Work\ImagePE\Program Files\DETA\AyrSHSDeploy.exe
 #AutoIt3Wrapper_UseX64=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
@@ -90,7 +90,7 @@ $btnDesktopGhostSelectImage = GUICtrlCreateButton("Select Ghost Image", 248, 304
 GUICtrlSetOnEvent(-1, "btnDesktopGhostSelectImageClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $TabSheet4 = GUICtrlCreateTabItem("Other")
-GUICtrlSetState(-1,$GUI_SHOW)
+GUICtrlSetState(-1, $GUI_SHOW)
 $Ghost = GUICtrlCreateGroup("Ghost", 32, 104, 177, 73)
 $btnRunGhost = GUICtrlCreateButton("Run Ghost32", 48, 128, 145, 33)
 GUICtrlSetOnEvent(-1, "btnRunGhostClick")
@@ -168,7 +168,7 @@ GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
 Global $fnCFSGhost, $fnCFTGhost, $fnDesktopGhost
-Global $arrAlphabet[26] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+Global $arrAlphabet[26] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 _DebugSetup("BTDeploy Debug Output", True)
 ; ******************************************************************
 ; UPDATE WITH YOUR OWN DEPLOYMENT HOST.
@@ -181,7 +181,7 @@ _DebugReportVar("strDeploymentHost", $strDeploymentHost)
 ; *******************************************************************
 
 While 1
- Sleep(100)
+	Sleep(100)
 WEnd
 
 ; ****************************************************
@@ -212,7 +212,8 @@ Func PartitionMachine($strType, $bEnableOutput = True)
 	EndIf
 	; assume disk partition info is at X:\disk.wipe.txt
 	; now run gdisk32.
-	$outPartition = RunWait("X:\Program Files\Ghost\Gdisk32.exe 1 /BATCH:X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
+	;$outPartition = RunWait("X:\Program Files\Ghost\Gdisk32.exe 1 /BATCH:X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
+	$outPartition = RunWait("diskpart /s X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
 	If ($outPartition = 0) And (@error <> 0) Then
 		If $bEnableOutput Then
 			;MsgBox(0, "Error", "Partitioning failed.  See Gdisk32 for more info.")
@@ -226,7 +227,7 @@ Func PartitionMachine($strType, $bEnableOutput = True)
 		;MsgBox(0, "Success!", "Partitioned machine!")
 	EndIf
 	Return 1
-EndFunc
+EndFunc   ;==>PartitionMachine
 
 Func FindDriveByLabel($strLabel)
 	;
@@ -242,18 +243,20 @@ Func FindDriveByLabel($strLabel)
 	Until $curIndex = 26
 	_DebugReport("FindDriveByLabel: Could not find " & $strLabel)
 	Return ""
-EndFunc
+EndFunc   ;==>FindDriveByLabel
 
 Func EraseDownloadApplyWIM($strName)
 	Local $outDownload, $outPartition, $outTorrent, $outApplySystem, $outApplyRecovery
 	Local $outApplyData, $outApplyHome
 	Local $drvSystem, $drvHome, $drvRecovery, $drvData, $outSetPartActive
 
+#cs
 	If PartitionMachine($strName, False) = 0 Then
 		_DebugReport("EraseDownloadApplyWIM: Failed to partition machine.  Check download on server, or presence of gdisk32.")
 		;MsgBox(16, "Error!", "Failed to partition machine.  Check download on server, or presence of gdisk32.")
 		Return 0
 	EndIf
+#ce
 
 	If $strName == "CFS" Then
 		$drvSystem = FindDriveByLabel("System")
@@ -284,6 +287,7 @@ Func EraseDownloadApplyWIM($strName)
 		EndIf
 	EndIf
 
+#cs
 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
 	If ($outTorrent = 0) And (@error <> 0) Then
 		; error in torrent download :(
@@ -291,6 +295,7 @@ Func EraseDownloadApplyWIM($strName)
 		MsgBox(16, "Error", "Error downloading torrent.  Tried to download to: " & $drvData)
 		Return 0
 	EndIf
+#ce
 
 	; ALL Images will be called "Image.WIM"
 	; ie: D:\CFS\Image.WIM
@@ -322,11 +327,30 @@ Func EraseDownloadApplyWIM($strName)
 
 	If $strName == "CFS" Then
 		; Unhide drives.
- 		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
- 		If CreateBCDStore($drvHome) = 0 Then Return 0
+		If (GrabFile($strDeploymentHost & $strName & "/stage2.txt", "X:\") = 0) Or (GrabFile($strDeploymentHost & $strName & "/stage3.txt", "X:\") = 0) Or (GrabFile($strDeploymentHost & $strName & "/stage4.txt", "X:\") = 0) Then
+			_DebugReport("Failed to DL partition scripts.")
+			Return 0
+		EndIf
+		RunWaitCheck("diskpart /s X:\stage2.txt", "Error running stage 2 partition stuff.")
+		$drvSystem = FindDriveByLabel("System")
+		$drvData = FindDriveByLabel("Data")
+		$drvHome = FindDriveByLabel("Home")
+		$drvRecovery = FindDriveByLabel("Reserved")
+		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
+		If CreateBCDStore($drvHome) = 0 Then Return 0
+		RunWaitCheck("diskpart /s X:\stage3.txt", "Error running stage 3 partition stuff.")
+		$drvSystem = FindDriveByLabel("System")
+		$drvData = FindDriveByLabel("Data")
+		$drvHome = FindDriveByLabel("Home")
+		$drvRecovery = FindDriveByLabel("Reserved")
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
- 		If CreateBCDStore($drvSystem) = 0 Then Return 0
-		If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
+		If CreateBCDStore($drvSystem) = 0 Then Return 0
+		RunWaitCheck("diskpart /s X:\stage4.txt", "Error running stage 4 partition stuff.")
+		$drvSystem = FindDriveByLabel("System")
+		$drvData = FindDriveByLabel("Data")
+		$drvHome = FindDriveByLabel("Home")
+		$drvRecovery = FindDriveByLabel("Reserved")
+		;If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
 		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
 		; we are back to how we were before.
 	Else
@@ -352,6 +376,17 @@ Func EraseDownloadApplyWIM($strName)
 		MsgBox(16, "Error.", "Something went screwy -- dont know what.")
 		Return 0
 	EndIf
+EndFunc   ;==>EraseDownloadApplyWIM
+
+Func GrabFile($strURL, $strOut)
+	Local $outFile
+	$outFile = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_SHOWNORMAL)
+	If ($outFile = 0) And (@error <> 0) Then
+		; error in torrent download :(
+		_DebugReport("GrabFile: Error downloading file.  URL = " & $strURL & " Path = " & $strOut)
+		Return 0
+	EndIf
+	Return 1
 EndFunc
 
 Func CreateBCDStore($strDrive)
@@ -360,8 +395,8 @@ Func CreateBCDStore($strDrive)
 	FileDelete($strDrive & "Boot\BCD")
 	If RunWaitCheck("bcdedit /createstore " & $strDrive & "Boot\BCD", "Failed to create temporary BCD store", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /create {bootmgr} /d ""Windows Boot Manager""", "Failed to create bootmgr entry in BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
-	; If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /import " & $strDrive & "boot\bcd.temp", "Failed to import BCD store.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {bootmgr} device partition=" & StringLeft($strDrive, 2), "Failed to set BCD partition.", $strDrive & "Windows\System32") = 0 Then Return 0
+	;If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {bootmgr} device locate=unknown", "Failed to set BCD partition.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {bootmgr} locale en-US", "Failed to set locale.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32") = 0 Then Return 0
 	; needs to run in C:\Windows\System32, assuming C: = the partition. this is because bcdedit is not in winpe by default.
@@ -398,19 +433,19 @@ Func CreateBCDStore($strDrive)
 
 	FileClose($bcdOutTxt)
 
-;	While 1
+	;	While 1
 	;	$line = StdoutRead($bcdCreateOut)
 	;	Local $arrGuid = _StringBetween($line, "{", "}")
-		;_ArrayDisplay($arrGuid, "Array: GUID for BCD")
-		;_DebugReport($line)
-		;If @error Then ExitLoop
+	;_ArrayDisplay($arrGuid, "Array: GUID for BCD")
+	;_DebugReport($line)
+	;If @error Then ExitLoop
 ;~ 		$iIndexBrace = StringInStr($line, "{")
 ;~ 		If $iIndexBrace > 0 Then
 ;~ 			$bcdGuid = StringMid($line, $iIndexBrace, 36)
 ;~ 			_DebugReport("BCD: " & $line)
 ;~ 			_DebugReportVar("bcdGuid", $bcdGuid)
 ;~ 		EndIf
-;		$bcdOutStr &= $line
+	;		$bcdOutStr &= $line
 	;Wend
 	Local $arrGuid = _StringBetween($contents, "{", "}")
 	_DebugReportVar("arrGuid", $arrGuid)
@@ -428,33 +463,37 @@ Func CreateBCDStore($strDrive)
 
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	;If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} device locate=\windows\system32\winload.exe", "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+	;If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} osdevice locate=\windows", "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
+
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} path \Windows\system32\winload.exe", "Failed to set winload path.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} systemroot \Windows", "Failed to set windows path.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} locale en-US", "Failed to set locale - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
+	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} recoveryenabled No", "Failed to set recovery disabled. - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /displayorder {" & $bcdGuid & "}", "Failed to set display order.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /default {" & $bcdGuid & "}", "Failed to set default.", $strDrive & "Windows\System32") = 0 Then Return 0
 	Return 1
 	#cs BCD Commands.
-	del C:\boot\bcd
-	bcdedit /createstore c:\boot\bcd.temp
-	bcdedit.exe /store c:\boot\bcd.temp /create {bootmgr} /d "Windows Boot Manager"
-	bcdedit.exe /import c:\boot\bcd.temp
-	bcdedit.exe /set {bootmgr} device partition=C:
-	bcdedit.exe /set {bootmgr} locale en-US
-	bcdedit.exe /timeout 10
-	del c:\boot\bcd.temp
-	--- OS --
-	bcdedit.exe /create /d "Windows 7 Enterprise Edition" /application osloader
-	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} device partition=C:
-	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} osdevice partition=C:
-	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} path \Windows\system32\winload.exe
-	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} systemroot \Windows
-	bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} locale en-US
-	--- DISPLAY --
-	bcdedit.exe /displayorder {c0dfc4fa-cb21-11dc-81bf-005056c00008}
-	bcdedit.exe /default {c0dfc4fa-cb21-11dc-81bf-005056c00008}
+		del C:\boot\bcd
+		bcdedit /createstore c:\boot\bcd.temp
+		bcdedit.exe /store c:\boot\bcd.temp /create {bootmgr} /d "Windows Boot Manager"
+		bcdedit.exe /import c:\boot\bcd.temp
+		bcdedit.exe /set {bootmgr} device partition=C:
+		bcdedit.exe /set {bootmgr} locale en-US
+		bcdedit.exe /timeout 10
+		del c:\boot\bcd.temp
+		--- OS --
+		bcdedit.exe /create /d "Windows 7 Enterprise Edition" /application osloader
+		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} device partition=C:
+		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} osdevice partition=C:
+		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} path \Windows\system32\winload.exe
+		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} systemroot \Windows
+		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} locale en-US
+		--- DISPLAY --
+		bcdedit.exe /displayorder {c0dfc4fa-cb21-11dc-81bf-005056c00008}
+		bcdedit.exe /default {c0dfc4fa-cb21-11dc-81bf-005056c00008}
 	#ce
-EndFunc
+EndFunc   ;==>CreateBCDStore
 
 Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 	; Function that all error checking is done in.
@@ -472,7 +511,7 @@ Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 		_DebugReport($strCmd & " SUCCESSFUL")
 		Return 1
 	EndIf
-EndFunc
+EndFunc   ;==>RunWaitCheck
 
 Func EraseDownloadImage($strName)
 	; ******************************************************
@@ -487,7 +526,7 @@ Func EraseDownloadImage($strName)
 	EndIf
 	Run("X:\Windows\System32\aria2c.exe --dir=V:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", "V:\", @SW_SHOWNORMAL)
 	; automatically loads torrent when downloaded.
-EndFunc
+EndFunc   ;==>EraseDownloadImage
 
 Func ApplyDownloadImage($strName)
 	; ******************************************************
@@ -506,7 +545,7 @@ Func ApplyDownloadImage($strName)
 		; run ghost
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -PRESERVE=V:\" & $strName & ".gho -PRESERVEDIMAGEDELETEAFTERCLONE -PRESERVEDEST=1 -CLONE,mode=RESTORE,src=V:\" & $strName & ".gho,dst=1", "X:\", @SW_SHOWNORMAL)
 	EndIf
-EndFunc
+EndFunc   ;==>ApplyDownloadImage
 
 Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 	Local $strLetter, $outBootSect
@@ -544,7 +583,7 @@ Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 		MsgBox(0, "Notice:", "Failed to repair BCD. Error code: " & $bcdReturn)
 		Return 1
 	EndIf
-EndFunc
+EndFunc   ;==>FixBCDDrive
 
 Func btnBCDFixClick()
 	Local $strLetter
@@ -553,7 +592,7 @@ Func btnBCDFixClick()
 	CreateBCDStore($strLetter & ":\")
 	;FixBCDDrive($strLetter, False, False)
 
-EndFunc
+EndFunc   ;==>btnBCDFixClick
 
 Func btnCFSSelectGhostImageClick()
 	Local $message, $var
@@ -562,13 +601,13 @@ Func btnCFSSelectGhostImageClick()
 	$var = FileOpenDialog($message, "X:\", "Ghost Images (*.gho)", 1)
 
 	If @error Then
-		MsgBox(4096,"","No File(s) chosen")
+		MsgBox(4096, "", "No File(s) chosen")
 	Else
 		$var = StringReplace($var, "|", @CRLF)
 		$fnCFSGhost = $var
 		;MsgBox(4096,"","You chose " & $var)
 	EndIf
-EndFunc
+EndFunc   ;==>btnCFSSelectGhostImageClick
 Func btnCFTSelectGhostImageClick()
 	Local $message, $var
 	$message = "Select Ghost Image"
@@ -576,13 +615,13 @@ Func btnCFTSelectGhostImageClick()
 	$var = FileOpenDialog($message, "X:\", "Ghost Images (*.gho)", 1)
 
 	If @error Then
-		MsgBox(4096,"","No File(s) chosen")
+		MsgBox(4096, "", "No File(s) chosen")
 	Else
 		$var = StringReplace($var, "|", @CRLF)
 		$fnCFTGhost = $var
 		;MsgBox(4096,"","You chose " & $var)
 	EndIf
-EndFunc
+EndFunc   ;==>btnCFTSelectGhostImageClick
 Func btnDesktopGhostSelectImageClick()
 	Local $message, $var
 	$message = "Select Ghost Image"
@@ -590,57 +629,57 @@ Func btnDesktopGhostSelectImageClick()
 	$var = FileOpenDialog($message, "X:\", "Ghost Images (*.gho)", 1)
 
 	If @error Then
-		MsgBox(4096,"","No File(s) chosen")
+		MsgBox(4096, "", "No File(s) chosen")
 	Else
 		$var = StringReplace($var, "|", @CRLF)
 		$fnDesktopGhost = $var
 		;MsgBox(4096,"","You chose " & $var)
 	EndIf
-EndFunc
+EndFunc   ;==>btnDesktopGhostSelectImageClick
 Func btnEDACFSClick()
 	ApplyDownloadImage("CFS")
-EndFunc
+EndFunc   ;==>btnEDACFSClick
 Func btnEDACFTClick()
 	ApplyDownloadImage("CFT")
-EndFunc
+EndFunc   ;==>btnEDACFTClick
 Func btnEDADesktopClick()
 	ApplyDownloadImage("Desktop")
-EndFunc
+EndFunc   ;==>btnEDADesktopClick
 Func btnEDCFSClick()
 	EraseDownloadImage("CFS")
-EndFunc
+EndFunc   ;==>btnEDCFSClick
 Func btnEDCFTClick()
 	EraseDownloadImage("CFT")
-EndFunc
+EndFunc   ;==>btnEDCFTClick
 Func btnEDDesktopClick()
 	EraseDownloadImage("Desktop")
-EndFunc
+EndFunc   ;==>btnEDDesktopClick
 Func btnFixGrub4DosClick()
 	If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
-EndFunc
+EndFunc   ;==>btnFixGrub4DosClick
 Func btnImgCFSPWin7Click()
-$strSessionName = GuiCtrlRead($txtCFSGhostSessionName)
+	$strSessionName = GUICtrlRead($txtCFSGhostSessionName)
 
-If ($strSessionName == "") And ($fnCFSGhost == "") Then
-	MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-	Return 1
-EndIf
+	If ($strSessionName == "") And ($fnCFSGhost == "") Then
+		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
+		Return 1
+	EndIf
 
-If ($strSessionName == "") And ($fnCFSGhost <> "") Then
-	; Ghost file is the preferred way. Do that.
-	; TODO
-EndIf
+	If ($strSessionName == "") And ($fnCFSGhost <> "") Then
+		; Ghost file is the preferred way. Do that.
+		; TODO
+	EndIf
 
-If ($strSessionName <> "") And ($fnCFSGhost == "") Then
-	; Session is the preferred way. Do that.
-EndIf
-EndFunc
+	If ($strSessionName <> "") And ($fnCFSGhost == "") Then
+		; Session is the preferred way. Do that.
+	EndIf
+EndFunc   ;==>btnImgCFSPWin7Click
 Func btnImgCFSPWinXPClick()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnImgCFSPWinXPClick
 Func btnImgCFSWin7Click()
 	Local $strSessionName
-	$strSessionName = GuiCtrlRead($txtCFSGhostSessionName)
+	$strSessionName = GUICtrlRead($txtCFSGhostSessionName)
 
 	If ($strSessionName == "") And ($fnCFSGhost == "") Then
 		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
@@ -656,10 +695,10 @@ Func btnImgCFSWin7Click()
 		; Session is the preferred way. Do that.
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
 	EndIf
-EndFunc
+EndFunc   ;==>btnImgCFSWin7Click
 Func btnImgCFSWinXPClick()
 	Local $strSessionName
-	$strSessionName = GuiCtrlRead($txtCFSGhostSessionName)
+	$strSessionName = GUICtrlRead($txtCFSGhostSessionName)
 
 	If ($strSessionName == "") And ($fnCFSGhost == "") Then
 		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
@@ -675,16 +714,16 @@ Func btnImgCFSWinXPClick()
 		; Session is the preferred way. Do that.
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
 	EndIf
-EndFunc
+EndFunc   ;==>btnImgCFSWinXPClick
 Func btnImgCFTPWin7Click()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnImgCFTPWin7Click
 Func btnImgCFTPWinXPClick()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnImgCFTPWinXPClick
 Func btnImgCFTWin7Click()
 	Local $strSessionName
-	$strSessionName = GuiCtrlRead($txtCFTGhostSessionName)
+	$strSessionName = GUICtrlRead($txtCFTGhostSessionName)
 
 	If ($strSessionName == "") And ($fnCFTGhost == "") Then
 		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
@@ -700,10 +739,10 @@ Func btnImgCFTWin7Click()
 		; Session is the preferred way. Do that.
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
 	EndIf
-EndFunc
+EndFunc   ;==>btnImgCFTWin7Click
 Func btnImgCFTWinXPClick()
 	Local $strSessionName
-	$strSessionName = GuiCtrlRead($txtCFTGhostSessionName)
+	$strSessionName = GUICtrlRead($txtCFTGhostSessionName)
 
 	If ($strSessionName == "") And ($fnCFTGhost == "") Then
 		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
@@ -719,16 +758,16 @@ Func btnImgCFTWinXPClick()
 		; Session is the preferred way. Do that.
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
 	EndIf
-EndFunc
+EndFunc   ;==>btnImgCFTWinXPClick
 Func btnImgDPWin7Click()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnImgDPWin7Click
 Func btnImgDPWinXPClick()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnImgDPWinXPClick
 Func btnImgDWin7Click()
 	Local $strSessionName
-	$strSessionName = GuiCtrlRead($txtDesktopSession)
+	$strSessionName = GUICtrlRead($txtDesktopSession)
 
 	If ($strSessionName == "") And ($fnDesktopGhost == "") Then
 		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
@@ -744,10 +783,10 @@ Func btnImgDWin7Click()
 		; Session is the preferred way. Do that.
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
 	EndIf
-EndFunc
+EndFunc   ;==>btnImgDWin7Click
 Func btnImgDWinXPClick()
 	Local $strSessionName
-	$strSessionName = GuiCtrlRead($txtDesktopSession)
+	$strSessionName = GUICtrlRead($txtDesktopSession)
 
 	If ($strSessionName == "") And ($fnDesktopGhost == "") Then
 		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
@@ -763,35 +802,35 @@ Func btnImgDWinXPClick()
 		; Session is the preferred way. Do that.
 		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
 	EndIf
-EndFunc
+EndFunc   ;==>btnImgDWinXPClick
 Func btnPDCFSClick()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnPDCFSClick
 Func btnPDCFTClick()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnPDCFTClick
 Func btnPDDesktopClick()
 	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc
+EndFunc   ;==>btnPDDesktopClick
 Func btnRunCmdClick()
 	Run("cmd")
-EndFunc
+EndFunc   ;==>btnRunCmdClick
 Func btnRunGhostClick()
 	; asynchronous. don't wait for ghost to do its business.
 	Run("X:\Program Files\Ghost\Ghost32.exe", "X:\")
-EndFunc
+EndFunc   ;==>btnRunGhostClick
 Func Form1Close()
-Exit(0)
-EndFunc
+	Exit (0)
+EndFunc   ;==>Form1Close
 Func btnPartitionCFSClick()
-PartitionMachine("CFS")
-EndFunc
+	PartitionMachine("CFS")
+EndFunc   ;==>btnPartitionCFSClick
 Func btnPartitionCFTClick()
-PartitionMachine("CFT")
-EndFunc
+	PartitionMachine("CFT")
+EndFunc   ;==>btnPartitionCFTClick
 Func btnPartitionDesktopClick()
-PartitionMachine("Desktop")
-EndFunc
+	PartitionMachine("Desktop")
+EndFunc   ;==>btnPartitionDesktopClick
 Func btnUnhideAllClick()
 	; dont bother error checking here -- there will be failures on some because the partitions won't be present.
 	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:1 /Y", "X:\", @SW_SHOWNORMAL)
@@ -799,37 +838,37 @@ Func btnUnhideAllClick()
 	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:3 /Y", "X:\", @SW_SHOWNORMAL)
 	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:4 /Y", "X:\", @SW_SHOWNORMAL)
 	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:0 /Y", "X:\", @SW_SHOWNORMAL)
-EndFunc
+EndFunc   ;==>btnUnhideAllClick
 Func btnWipeDiskDODClick()
 	Run("X:\Program Files\Ghost\gdisk32.exe 1 /DISKWIPE /CUSTOM:3 /Y", "X:\", @SW_SHOWNORMAL)
-EndFunc
+EndFunc   ;==>btnWipeDiskDODClick
 Func btnDiskWipe1Click()
 	Run("X:\Program Files\Ghost\gdisk32.exe 1 /DISKWIPE /Y", "X:\", @SW_SHOWNORMAL)
-EndFunc
+EndFunc   ;==>btnDiskWipe1Click
 Func txtBCDDriveChange()
 
-EndFunc
+EndFunc   ;==>txtBCDDriveChange
 
 Func btnWIMEDACFSClick()
-EraseDownloadApplyWIM("CFS")
-EndFunc
+	EraseDownloadApplyWIM("CFS")
+EndFunc   ;==>btnWIMEDACFSClick
 Func btnWIMEDACFTClick()
-EraseDownloadApplyWIM("CFT")
-EndFunc
+	EraseDownloadApplyWIM("CFT")
+EndFunc   ;==>btnWIMEDACFTClick
 Func btnWIMEDADesktopClick()
-EraseDownloadApplyWIM("Desktop")
-EndFunc
+	EraseDownloadApplyWIM("Desktop")
+EndFunc   ;==>btnWIMEDADesktopClick
 
 Func btnRunExplorerClick()
 	Run("X:\Program Files\ExplorerPlusPlus\Explorer++.exe", "X:\", @SW_SHOWNORMAL)
-EndFunc
+EndFunc   ;==>btnRunExplorerClick
 
 Func txtCFSGhostSessionNameChange()
 
-EndFunc
+EndFunc   ;==>txtCFSGhostSessionNameChange
 Func txtCFTGhostSessionNameChange()
 
-EndFunc
+EndFunc   ;==>txtCFTGhostSessionNameChange
 Func txtDesktopSessionChange()
 
-EndFunc
+EndFunc   ;==>txtDesktopSessionChange

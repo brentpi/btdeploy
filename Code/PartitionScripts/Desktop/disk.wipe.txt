@@ -1,12 +1,12 @@
-# ----- DESKTOP WINDOWS 7 ------
-# delete all partitions from disk
-/del /all
-# create “Reserved” partition
-# 1MB alignment as per Microsoft specifications for Vista/7.
-/cre /pri /sz:100 /for /q /V:Reserved  /LETTER:P /NTFS:Vista /align:1MB /Y
-# create “System” partition
-/cre /pri /sz:50000 /for /q /V:System /LETTER:Q /NTFS:Vista /align:1MB /Y
-# create “Data” partition – extended/logical
-/cre /ext /Y
-/cre /log /for /q /V:Data /LETTER:S /NTFS:Vista /align:1MB /Y
-# ----- END DESKTOP WINDOWS 7 -----
+select disk 0
+clean
+create partition primary size=100
+format fs=NTFS label="Reserved" quick
+assign letter="P"
+create partition primary size=50000
+format fs=ntfs label="System" quick
+assign letter="Q"
+create partition extended
+create partition logical
+format fs=ntfs label="Data" quick
+assign letter="S"

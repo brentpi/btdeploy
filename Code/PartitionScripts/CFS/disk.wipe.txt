@@ -1,13 +1,15 @@
-# CFS WINDOWS 7
-# 2011
-/del /all
-# recovery
-/cre /pri /sz:1000 /for /q /v:Reserved /LETTER:P /NTFS:Vista /align:1MB /Y
-# data
-# Use this for new build: /cre /ext /sz:45588 /Y
-# Use this for new build: /cre /log /for /q /v:Data /LETTER:S /NTFS:Vista /align:1MB /Y
-/cre /pri /sz:45588 /for /q /v:Data /LETTER:S /NTFS:Vista /align:1MB /Y
-# system
-/cre /pri /sz:54000 /for /q /v:System /LETTER:Q /NTFS:Vista /align:1MB /Y
-# home
-/cre /pri /sz:52001 /for /q /v:Home /LETTER:R /NTFS:Vista /align:1MB /Y
+select disk 0
+clean
+create partition primary size=1000
+format fs=ntfs label="Reserved" quick
+assign letter="P"
+create partition primary size=45588
+format fs=ntfs label="Data" quick
+assign letter="S"
+create partition primary size=54000
+format fs=ntfs label="System" quick
+assign letter="Q"
+active
+create partition primary size=52001
+format fs=ntfs label="Home" quick
+assign letter="R"
