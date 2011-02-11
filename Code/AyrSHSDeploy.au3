@@ -18,17 +18,20 @@
 
 Opt("GUIOnEventMode", 1)
 #Region ### START Koda GUI section ### Form=r:\work\koda\forms\ayrshsdeploy.kxf
-$Form1_2 = GUICreate("AyrSHS WinPE Environment", 615, 438)
+$Form1_2 = GUICreate("AyrSHS WinPE Environment", 615, 438, 217, 447)
 GUISetOnEvent($GUI_EVENT_CLOSE, "Form1Close")
-$Label1 = GUICtrlCreateLabel("AyrSHS WinPE Environment", 128, 16, 383, 37)
+$Label1 = GUICtrlCreateLabel(IniRead("Settings.ini", "Main", "GuiMainLabel", "AyrSHS WinPE Environment"), 128, 16, 383, 37)
 GUICtrlSetFont(-1, 20, 800, 0, "Tahoma")
 $Tab1 = GUICtrlCreateTab(16, 64, 585, 353)
 $TabSheet1 = GUICtrlCreateTabItem("Computers For Students")
-$grpCFSWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 121)
-$btnImgCFSWin7 = GUICtrlCreateButton("Image Machine", 48, 128, 145, 33)
+$grpCFSWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 257)
+$btnImgCFSWin7 = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33)
 GUICtrlSetOnEvent(-1, "btnImgCFSWin7Click")
-$btnImgCFSPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 176, 145, 33)
+$btnImgCFSPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33)
 GUICtrlSetOnEvent(-1, "btnImgCFSPWin7Click")
+$radCFSGhost = GUICtrlCreateRadio("Ghost", 48, 136, 113, 17)
+$radCFSTorrent = GUICtrlCreateRadio("Torrent", 48, 160, 113, 17)
+GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpSettingsCFS = GUICtrlCreateGroup("Settings", 232, 104, 177, 257)
 $Label9 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17)
@@ -39,18 +42,15 @@ GUICtrlSetFont(-1, 16, 400, 0, "MS Sans Serif")
 $btnCFSSelectGhostImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33)
 GUICtrlSetOnEvent(-1, "btnCFSSelectGhostImageClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-$grpCFSWinXP = GUICtrlCreateGroup("Windows XP", 32, 240, 177, 121)
-$btnImgCFSWinXP = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33)
-GUICtrlSetOnEvent(-1, "btnImgCFSWinXPClick")
-$btnImgCFSPWinXP = GUICtrlCreateButton("Image Machine -Preserve", 48, 312, 145, 33)
-GUICtrlSetOnEvent(-1, "btnImgCFSPWinXPClick")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
 $TabSheet2 = GUICtrlCreateTabItem("Computers for Teachers")
-$grpCFTWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 121)
-$btnImgCFTWin7 = GUICtrlCreateButton("Image Machine", 48, 128, 145, 33)
+$grpCFTWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 257)
+$btnImgCFTWin7 = GUICtrlCreateButton("Image Machine", 48, 256, 145, 33)
 GUICtrlSetOnEvent(-1, "btnImgCFTWin7Click")
-$btnImgCFTPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 176, 145, 33)
+$btnImgCFTPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33)
 GUICtrlSetOnEvent(-1, "btnImgCFTPWin7Click")
+$radCFTGhost = GUICtrlCreateRadio("Ghost", 48, 136, 113, 17)
+$radCFTTorrent = GUICtrlCreateRadio("Torrent", 48, 160, 113, 17)
+GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $Group2 = GUICtrlCreateGroup("Settings", 232, 104, 177, 257)
 $Label7 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17)
@@ -61,24 +61,15 @@ GUICtrlSetFont(-1, 16, 400, 0, "MS Sans Serif")
 $btnCFTSelectGhostImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33)
 GUICtrlSetOnEvent(-1, "btnCFTSelectGhostImageClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-$grpCFTWinXP = GUICtrlCreateGroup("Windows XP", 32, 240, 177, 121)
-$btnImgCFTWinXP = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33)
-GUICtrlSetOnEvent(-1, "btnImgCFTWinXPClick")
-$btnImgCFTPWinXP = GUICtrlCreateButton("Image Machine -Preserve", 48, 312, 145, 33)
-GUICtrlSetOnEvent(-1, "btnImgCFTPWinXPClick")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
 $TabSheet3 = GUICtrlCreateTabItem("Desktop Machines")
-$grpDeskWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 121)
-$btnImgDWin7 = GUICtrlCreateButton("Image Machine", 48, 128, 145, 33)
+$grpDeskWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 257)
+$btnImgDWin7 = GUICtrlCreateButton("Image Machine", 48, 256, 145, 33)
 GUICtrlSetOnEvent(-1, "btnImgDWin7Click")
-$btnImgDPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 176, 145, 33)
+$btnImgDPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33)
 GUICtrlSetOnEvent(-1, "btnImgDPWin7Click")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$grpDesktopWinXP = GUICtrlCreateGroup("Windows XP", 32, 240, 177, 121)
-$btnImgDWinXP = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33)
-GUICtrlSetOnEvent(-1, "btnImgDWinXPClick")
-$btnImgDPWinXP = GUICtrlCreateButton("Image Machine -Preserve", 48, 312, 145, 33)
-GUICtrlSetOnEvent(-1, "btnImgDPWinXPClick")
+$radDesktopGhost = GUICtrlCreateRadio("Ghost", 48, 136, 113, 17)
+$radDesktopTorrent = GUICtrlCreateRadio("Torrent", 48, 160, 113, 17)
+GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpDesktopSettings = GUICtrlCreateGroup("Settings", 232, 104, 177, 257)
 $Label5 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17)
@@ -89,8 +80,8 @@ GUICtrlSetFont(-1, 16, 400, 0, "MS Sans Serif")
 $btnDesktopGhostSelectImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33)
 GUICtrlSetOnEvent(-1, "btnDesktopGhostSelectImageClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-$TabSheet4 = GUICtrlCreateTabItem("Other")
-GUICtrlSetState(-1, $GUI_SHOW)
+$TabSheet4 = GUICtrlCreateTabItem("Utilities")
+GUICtrlSetState(-1,$GUI_SHOW)
 $Ghost = GUICtrlCreateGroup("Ghost", 32, 104, 177, 73)
 $btnRunGhost = GUICtrlCreateButton("Run Ghost32", 48, 128, 145, 33)
 GUICtrlSetOnEvent(-1, "btnRunGhostClick")
@@ -112,7 +103,7 @@ GUICtrlSetOnEvent(-1, "btnFixGrub4DosClick")
 $Label3 = GUICtrlCreateLabel("Fetch Grub4DOS Boot Sector", 240, 216, 145, 17)
 $Label4 = GUICtrlCreateLabel("and write to the MBR.", 240, 232, 107, 17)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-$grpGDisk = GUICtrlCreateGroup("GDisk", 416, 104, 169, 273)
+$grpGDisk = GUICtrlCreateGroup("GDisk", 416, 104, 169, 297)
 $btnDiskWipe1 = GUICtrlCreateButton("Wipe Disk 1", 432, 128, 137, 33)
 GUICtrlSetOnEvent(-1, "btnDiskWipe1Click")
 $btnUnhideAll = GUICtrlCreateButton("Unhide All", 432, 168, 137, 33)
@@ -130,38 +121,9 @@ $grpRunExplorer = GUICtrlCreateGroup("Explorer", 32, 328, 177, 73)
 $btnRunExplorer = GUICtrlCreateButton("Run Explorer", 48, 352, 145, 33)
 GUICtrlSetOnEvent(-1, "btnRunExplorerClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-$TabSheet5 = GUICtrlCreateTabItem("BitTorrent Distribution")
-$grpAriaEDA = GUICtrlCreateGroup("Aria2c - Erase, Download, Apply", 32, 104, 177, 145)
-$btnEDACFS = GUICtrlCreateButton("Computers for Students", 48, 128, 145, 33)
-GUICtrlSetOnEvent(-1, "btnEDACFSClick")
-$btnEDACFT = GUICtrlCreateButton("Computers for Teachers", 48, 168, 145, 33)
-GUICtrlSetOnEvent(-1, "btnEDACFTClick")
-$btnEDADesktop = GUICtrlCreateButton("Desktop", 48, 208, 145, 33)
-GUICtrlSetOnEvent(-1, "btnEDADesktopClick")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$grpAriaED = GUICtrlCreateGroup("Aria2c - Erase, Download", 216, 104, 177, 145)
-$btnEDCFS = GUICtrlCreateButton("Computers for Students", 232, 128, 145, 33)
-GUICtrlSetOnEvent(-1, "btnEDCFSClick")
-$btnEDCFT = GUICtrlCreateButton("Computers for Teachers", 232, 168, 145, 33)
-GUICtrlSetOnEvent(-1, "btnEDCFTClick")
-$btnEDDesktop = GUICtrlCreateButton("Desktop", 232, 208, 145, 33)
-GUICtrlSetOnEvent(-1, "btnEDDesktopClick")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$grpAriaPD = GUICtrlCreateGroup("Aria2c - Preserve, Download", 400, 104, 177, 145)
-$btnPDCFS = GUICtrlCreateButton("Computers for Students", 416, 128, 145, 33)
-GUICtrlSetOnEvent(-1, "btnPDCFSClick")
-$btnPDCFT = GUICtrlCreateButton("Computers for Teachers", 416, 168, 145, 33)
-GUICtrlSetOnEvent(-1, "btnPDCFTClick")
-$btnPDDesktop = GUICtrlCreateButton("Desktop", 416, 208, 145, 33)
-GUICtrlSetOnEvent(-1, "btnPDDesktopClick")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$Group1 = GUICtrlCreateGroup("WIM - Erase Download Apply", 32, 256, 177, 145)
-$btnWIMEDACFS = GUICtrlCreateButton("Computers for Students", 48, 280, 145, 33)
-GUICtrlSetOnEvent(-1, "btnWIMEDACFSClick")
-$btnWIMEDACFT = GUICtrlCreateButton("Computers for Teachers", 48, 320, 145, 33)
-GUICtrlSetOnEvent(-1, "btnWIMEDACFTClick")
-$btnWIMEDADesktop = GUICtrlCreateButton("Desktop", 48, 360, 145, 33)
-GUICtrlSetOnEvent(-1, "btnWIMEDADesktopClick")
+$grpReboot = GUICtrlCreateGroup("Reboot", 224, 328, 177, 73)
+$btnReboot = GUICtrlCreateButton("Reboot", 240, 352, 145, 33)
+GUICtrlSetOnEvent(-1, "btnRebootClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
 GUISetState(@SW_SHOW)
@@ -176,8 +138,21 @@ _DebugSetup("BTDeploy Debug Output", True)
 ; ******************************************************************
 ; Global Const $strDeploymentHost = "http://10.148.44.3/deployment/"
 ; Global Const $strDeploymentHost = "http://brentp.net/deployment/"
-Global Const $strDeploymentHost = "http://drop.edgiest.net/brent/"
-_DebugReportVar("strDeploymentHost", $strDeploymentHost)
+;Global Const $strDeploymentHost = "http://drop.edgiest.net/brent/"
+;_DebugReportVar("strDeploymentHost", $strDeploymentHost)
+
+	Global Const $strDeploymentHost = IniRead("Settings.ini", "Main", "DeploymentHost", "http://drop.edgiest.net/brent/")
+	Global Const $strCFSHomeIndex = IniRead("Settings.ini", "ImageX", "CFSHomeIndex", "3")
+	Global Const $strCFSMOEIndex = IniRead("Settings.ini", "ImageX", "CFSMOEIndex", "2")
+	Global Const $strCFSRecoveryIndex = IniRead("Settings.ini", "ImageX", "CFSRecoveryIndex", "1")
+	Global Const $strCFSDataIndex = IniRead("Settings.ini", "ImageX", "CFSDataIndex", "4")
+	Global Const $strDesktopMOEIndex = IniRead("Settings.ini", "ImageX", "DesktopMOEIndex", "2")
+	Global Const $strDesktopRecoveryIndex = IniRead("Settings.ini", "ImageX", "DesktopRecoveryIndex", "1")
+	Global Const $strDesktopDataIndex = IniRead("Settings.ini", "ImageX", "DesktopDataIndex", "3")
+	Global Const $strCFTMOEIndex = IniRead("Settings.ini", "ImageX", "CFTMOEIndex", "2")
+	Global Const $strCFTRecoveryIndex = IniRead("Settings.ini", "ImageX", "CFTRecoveryIndex", "1")
+	Global Const $strCFTDataIndex = IniRead("Settings.ini", "ImageX", "CFTDataIndex", "3")
+	_DebugReportVar("strDeploymentHost", $strDeploymentHost)
 ; *******************************************************************
 
 While 1
@@ -245,7 +220,7 @@ Func FindDriveByLabel($strLabel)
 	Return ""
 EndFunc   ;==>FindDriveByLabel
 
-Func EraseDownloadApplyWIM($strName)
+Func ApplyWIMImage($strName, $bPreserve)
 	Local $outDownload, $outPartition, $outTorrent, $outApplySystem, $outApplyRecovery
 	Local $outApplyData, $outApplyHome
 	Local $drvSystem, $drvHome, $drvRecovery, $drvData, $outSetPartActive
@@ -305,18 +280,19 @@ Func EraseDownloadApplyWIM($strName)
 	EndIf
 
 	; Apply Image.
-	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 1 " & $drvSystem, "Error applying System partition") = 0 Then Return 0
+	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "System") & " " & $drvSystem, "Error applying System partition") = 0 Then Return 0
+	;If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 1 " & $drvSystem, "Error applying System partition") = 0 Then Return 0
 
-	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 2 " & $drvRecovery, "Error applying Recovery partition") = 0 Then Return 0
+	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Reserved") & " " & $drvRecovery, "Error applying Recovery partition") = 0 Then Return 0
+
+	;If $strName == "CFS" Then
+	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Data") & " " & $drvData, "Error applying Data partition") = 0 Then Return 0
+	;Else
+	;	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvData, "Error applying Data partition") = 0 Then Return 0
+	;EndIf
 
 	If $strName == "CFS" Then
-		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 4 " & $drvData, "Error applying Data partition") = 0 Then Return 0
-	Else
-		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvData, "Error applying Data partition") = 0 Then Return 0
-	EndIf
-
-	If $strName == "CFS" Then
-		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvHome, "Failed to apply Home Partition") = 0 Then Return 0
+		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Home") & " " & $drvHome, "Failed to apply Home Partition") = 0 Then Return 0
 	EndIf
 
 	; This part fixes the BCD.  Merge this code into the BCD Fix function when it is tested and proven mature.  Otherwise revert to old code.
@@ -386,6 +362,41 @@ Func EraseDownloadApplyWIM($strName)
 	EndIf
 EndFunc   ;==>EraseDownloadApplyWIM
 
+Func GetIndexOfWim($strName, $strPartition)
+	;
+	Switch $strName
+	Case "CFS"
+		Switch $strPartition
+		Case "System"
+			Return $strCFSMOEIndex
+		Case "Home"
+			Return $strCFSHomeIndex
+		Case "Data"
+			Return $strCFSDataIndex
+		Case "Reserved"
+			Return $strCFSRecoveryIndex
+		EndSwitch
+	Case "Desktop"
+		Switch $strPartition
+		Case "System"
+			Return $strDesktopMOEIndex
+		Case "Data"
+			Return $strDesktopDataIndex
+		Case "Reserved"
+			Return $strDesktopRecoveryIndex
+		EndSwitch
+	Case "CFT"
+		Switch $strPartition
+		Case "System"
+			Return $strCFTMOEIndex
+		Case "Data"
+			Return $strCFTDataIndex
+		Case "Reserved"
+			Return $strCFTRecoveryIndex
+		EndSwitch
+	EndSwitch
+EndFunc
+
 Func GrabFile($strURL, $strOut)
 	Local $outFile
 	$outFile = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_SHOWNORMAL)
@@ -398,6 +409,9 @@ Func GrabFile($strURL, $strOut)
 EndFunc
 
 Func CreateBCDStore($strDrive)
+	; *********************
+	; *** NO USE FOR THIS AS OF 12/02
+	; *********************
 	; This Function creates a blank bcd store from scratch on the specified drive, and also copies the bcd files.
 	RunWaitCheck("attrib -S -H -R " & $strDrive & "Boot\BCD", "Failed to remove BCD Attributes", $strDrive & "Windows\System32")
 	FileDelete($strDrive & "Boot\BCD")
@@ -440,21 +454,6 @@ Func CreateBCDStore($strDrive)
 	_DebugReport("File contents: " & $contents)
 
 	FileClose($bcdOutTxt)
-
-	;	While 1
-	;	$line = StdoutRead($bcdCreateOut)
-	;	Local $arrGuid = _StringBetween($line, "{", "}")
-	;_ArrayDisplay($arrGuid, "Array: GUID for BCD")
-	;_DebugReport($line)
-	;If @error Then ExitLoop
-;~ 		$iIndexBrace = StringInStr($line, "{")
-;~ 		If $iIndexBrace > 0 Then
-;~ 			$bcdGuid = StringMid($line, $iIndexBrace, 36)
-;~ 			_DebugReport("BCD: " & $line)
-;~ 			_DebugReportVar("bcdGuid", $bcdGuid)
-;~ 		EndIf
-	;		$bcdOutStr &= $line
-	;Wend
 	Local $arrGuid = _StringBetween($contents, "{", "}")
 	_DebugReportVar("arrGuid", $arrGuid)
 	;_ArrayDisplay($arrGuid)
@@ -520,40 +519,6 @@ Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 		Return 1
 	EndIf
 EndFunc   ;==>RunWaitCheck
-
-Func EraseDownloadImage($strName)
-	; ******************************************************
-	; OLD FUNCTION. TODO: UPDATE FOR WIMS.
-	; ******************************************************
-	Local $outDPart, $outDownload
-
-	$outDPart = RunWait("X:\Windows\System32\diskpart.exe /s diskpartAyrSHS.txt", "X:\Program Files\DETA", @SW_SHOWNORMAL)
-	If $outDPart <> 0 Then
-		MsgBox(0, "Error", "Failed to wipe drive. Exiting.")
-		Return 1
-	EndIf
-	Run("X:\Windows\System32\aria2c.exe --dir=V:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", "V:\", @SW_SHOWNORMAL)
-	; automatically loads torrent when downloaded.
-EndFunc   ;==>EraseDownloadImage
-
-Func ApplyDownloadImage($strName)
-	; ******************************************************
-	; OLD FUNCTION. NOT UPDATED ANYMORE. WILL BE REMOVED.
-	; ******************************************************
-	Local $outDPart, $outDownload
-	$outDPart = RunWait("X:\Windows\System32\diskpart.exe /s diskpartAyrSHS.txt", "X:\Program Files\DETA", @SW_SHOWNORMAL)
-	If $outDPart <> 0 Then
-		MsgBox(0, "Error", "Failed to wipe drive. Exiting.")
-		Return 1
-	EndIf
-	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=V:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", "V:\", @SW_SHOWNORMAL)
-	; automatically loads torrent when downloaded. this blocks though which is a pain :\
-
-	If $outDownload > 0 Then
-		; run ghost
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -PRESERVE=V:\" & $strName & ".gho -PRESERVEDIMAGEDELETEAFTERCLONE -PRESERVEDEST=1 -CLONE,mode=RESTORE,src=V:\" & $strName & ".gho,dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-EndFunc   ;==>ApplyDownloadImage
 
 Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 	Local $strLetter, $outBootSect
@@ -644,182 +609,57 @@ Func btnDesktopGhostSelectImageClick()
 		;MsgBox(4096,"","You chose " & $var)
 	EndIf
 EndFunc   ;==>btnDesktopGhostSelectImageClick
-Func btnEDACFSClick()
-	ApplyDownloadImage("CFS")
-EndFunc   ;==>btnEDACFSClick
-Func btnEDACFTClick()
-	ApplyDownloadImage("CFT")
-EndFunc   ;==>btnEDACFTClick
-Func btnEDADesktopClick()
-	ApplyDownloadImage("Desktop")
-EndFunc   ;==>btnEDADesktopClick
-Func btnEDCFSClick()
-	EraseDownloadImage("CFS")
-EndFunc   ;==>btnEDCFSClick
-Func btnEDCFTClick()
-	EraseDownloadImage("CFT")
-EndFunc   ;==>btnEDCFTClick
-Func btnEDDesktopClick()
-	EraseDownloadImage("Desktop")
-EndFunc   ;==>btnEDDesktopClick
 Func btnFixGrub4DosClick()
 	If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
 EndFunc   ;==>btnFixGrub4DosClick
+Func GenericApplyImage($radTorrent, $radGhost, $txtGhost, $fnVar, $strType, $bPreserve)
+	; radTorrent = radiobox of torrent.
+	; radiobox of ghost
+	; txtbox with ghost session name
+	; type of image.
+	Local $bTorrent, $bGhost, $strSessionName
+	If GuiCtrlRead($radTorrent) = $GUI_CHECKED Then $bTorrent = True
+	If GuiCtrlRead($radGhost) = $GUI_CHECKED Then $bGhost = True
+	$strSessionName = GUICtrlRead($txtGhost)
+	; got all of the nececssary info.
+
+	If $radGhost = True Then
+		; do our ghosty stuff.
+		;
+		If $strSessionName = "" Then Return 0
+		If $fnVar <> "" Then
+			RunWaitCheck("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnVar & ",dst=1", "Ghosting failed. Refer to Ghosterr.txt.")
+		Else
+			RunWaitCheck("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "Ghosting failed. Refer to Ghosterr.txt.")
+		EndIf
+	ElseIf $radTorrent = True Then
+		; do our torrenty stuff.
+		;
+		ApplyWIMImage($strType, $bPreserve)
+	Else
+		Return 0
+	EndIf
+
+EndFunc
+
 Func btnImgCFSPWin7Click()
-	$strSessionName = GUICtrlRead($txtCFSGhostSessionName)
-
-	If ($strSessionName == "") And ($fnCFSGhost == "") Then
-		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-		Return 1
-	EndIf
-
-	If ($strSessionName == "") And ($fnCFSGhost <> "") Then
-		; Ghost file is the preferred way. Do that.
-		; TODO
-	EndIf
-
-	If ($strSessionName <> "") And ($fnCFSGhost == "") Then
-		; Session is the preferred way. Do that.
-	EndIf
+	GenericApplyImage($radCFSTorrent, $radCFSGhost, $txtCFSGhostSessionName, $fnCFSGhost, "CFS", True)
 EndFunc   ;==>btnImgCFSPWin7Click
-Func btnImgCFSPWinXPClick()
-	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc   ;==>btnImgCFSPWinXPClick
 Func btnImgCFSWin7Click()
-	Local $strSessionName
-	$strSessionName = GUICtrlRead($txtCFSGhostSessionName)
-
-	If ($strSessionName == "") And ($fnCFSGhost == "") Then
-		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-		Return 1
-	EndIf
-
-	If ($strSessionName == "") And ($fnCFSGhost <> "") Then
-		; Ghost file is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnDesktopGhost & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-
-	If ($strSessionName <> "") And ($fnCFSGhost == "") Then
-		; Session is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
+	GenericApplyImage($radCFSTorrent, $radCFSGhost, $txtCFSGhostSessionName, $fnCFSGhost, "CFS", False)
 EndFunc   ;==>btnImgCFSWin7Click
-Func btnImgCFSWinXPClick()
-	Local $strSessionName
-	$strSessionName = GUICtrlRead($txtCFSGhostSessionName)
-
-	If ($strSessionName == "") And ($fnCFSGhost == "") Then
-		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-		Return 1
-	EndIf
-
-	If ($strSessionName == "") And ($fnCFSGhost <> "") Then
-		; Ghost file is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnDesktopGhost & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-
-	If ($strSessionName <> "") And ($fnCFSGhost == "") Then
-		; Session is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-EndFunc   ;==>btnImgCFSWinXPClick
 Func btnImgCFTPWin7Click()
-	MsgBox(0, "Notice", "This feature is incomplete")
+	GenericApplyImage($radCFTTorrent, $radCFTGhost, $txtCFTGhostSessionName, $fnCFTGhost, "CFT", True)
 EndFunc   ;==>btnImgCFTPWin7Click
-Func btnImgCFTPWinXPClick()
-	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc   ;==>btnImgCFTPWinXPClick
 Func btnImgCFTWin7Click()
-	Local $strSessionName
-	$strSessionName = GUICtrlRead($txtCFTGhostSessionName)
-
-	If ($strSessionName == "") And ($fnCFTGhost == "") Then
-		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-		Return 1
-	EndIf
-
-	If ($strSessionName == "") And ($fnCFTGhost <> "") Then
-		; Ghost file is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnDesktopGhost & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-
-	If ($strSessionName <> "") And ($fnCFTGhost == "") Then
-		; Session is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
+	GenericApplyImage($radCFTTorrent, $radCFTGhost, $txtCFTGhostSessionName, $fnCFTGhost, "CFT", False)
 EndFunc   ;==>btnImgCFTWin7Click
-Func btnImgCFTWinXPClick()
-	Local $strSessionName
-	$strSessionName = GUICtrlRead($txtCFTGhostSessionName)
-
-	If ($strSessionName == "") And ($fnCFTGhost == "") Then
-		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-		Return 1
-	EndIf
-
-	If ($strSessionName == "") And ($fnCFTGhost <> "") Then
-		; Ghost file is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnDesktopGhost & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-
-	If ($strSessionName <> "") And ($fnCFTGhost == "") Then
-		; Session is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-EndFunc   ;==>btnImgCFTWinXPClick
 Func btnImgDPWin7Click()
-	MsgBox(0, "Notice", "This feature is incomplete")
+	GenericApplyImage($radDesktopTorrent, $radDesktopGhost, $txtDesktopSession, $fnDesktopGhost, "Desktop", True)
 EndFunc   ;==>btnImgDPWin7Click
-Func btnImgDPWinXPClick()
-	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc   ;==>btnImgDPWinXPClick
 Func btnImgDWin7Click()
-	Local $strSessionName
-	$strSessionName = GUICtrlRead($txtDesktopSession)
-
-	If ($strSessionName == "") And ($fnDesktopGhost == "") Then
-		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-		Return 1
-	EndIf
-
-	If ($strSessionName == "") And ($fnDesktopGhost <> "") Then
-		; Ghost file is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnDesktopGhost & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-
-	If ($strSessionName <> "") And ($fnDesktopGhost == "") Then
-		; Session is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
+	GenericApplyImage($radDesktopTorrent, $radDesktopGhost, $txtDesktopSession, $fnDesktopGhost, "Desktop", False)
 EndFunc   ;==>btnImgDWin7Click
-Func btnImgDWinXPClick()
-	Local $strSessionName
-	$strSessionName = GUICtrlRead($txtDesktopSession)
-
-	If ($strSessionName == "") And ($fnDesktopGhost == "") Then
-		MsgBox(0, "Error!", "Please either select a Ghost Image or enter a Session ID")
-		Return 1
-	EndIf
-
-	If ($strSessionName == "") And ($fnDesktopGhost <> "") Then
-		; Ghost file is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnDesktopGhost & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-
-	If ($strSessionName <> "") And ($fnDesktopGhost == "") Then
-		; Session is the preferred way. Do that.
-		Run("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "X:\", @SW_SHOWNORMAL)
-	EndIf
-EndFunc   ;==>btnImgDWinXPClick
-Func btnPDCFSClick()
-	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc   ;==>btnPDCFSClick
-Func btnPDCFTClick()
-	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc   ;==>btnPDCFTClick
-Func btnPDDesktopClick()
-	MsgBox(0, "Notice", "This feature is incomplete")
-EndFunc   ;==>btnPDDesktopClick
 Func btnRunCmdClick()
 	Run("cmd")
 EndFunc   ;==>btnRunCmdClick
@@ -841,36 +681,35 @@ Func btnPartitionDesktopClick()
 EndFunc   ;==>btnPartitionDesktopClick
 Func btnUnhideAllClick()
 	; dont bother error checking here -- there will be failures on some because the partitions won't be present.
-	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:1 /Y", "X:\", @SW_SHOWNORMAL)
-	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:2 /Y", "X:\", @SW_SHOWNORMAL)
-	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:3 /Y", "X:\", @SW_SHOWNORMAL)
-	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:4 /Y", "X:\", @SW_SHOWNORMAL)
-	Run("X:\Program Files\Ghost\gdisk32.exe 1 /~HIDE /P:0 /Y", "X:\", @SW_SHOWNORMAL)
+	Run("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:1 /Y", "X:\", @SW_HIDE)
+	Run("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:2 /Y", "X:\", @SW_HIDE)
+	Run("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:3 /Y", "X:\", @SW_HIDE)
+	Run("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:4 /Y", "X:\", @SW_HIDE)
+	Run("X:\Program Files\Ghost\gdisk32.exe 1 /-HIDE /P:0 /Y", "X:\", @SW_HIDE)
+	MsgBox(0, "Notice", "Done!")
 EndFunc   ;==>btnUnhideAllClick
 Func btnWipeDiskDODClick()
 	Run("X:\Program Files\Ghost\gdisk32.exe 1 /DISKWIPE /CUSTOM:3 /Y", "X:\", @SW_SHOWNORMAL)
 EndFunc   ;==>btnWipeDiskDODClick
 Func btnDiskWipe1Click()
-	Run("X:\Program Files\Ghost\gdisk32.exe 1 /DISKWIPE /Y", "X:\", @SW_SHOWNORMAL)
+	Run("X:\Program Files\Ghost\gdisk32.exe 1 /DEL /ALL", "X:\", @SW_SHOWNORMAL)
 EndFunc   ;==>btnDiskWipe1Click
 Func txtBCDDriveChange()
 
 EndFunc   ;==>txtBCDDriveChange
 
-Func btnWIMEDACFSClick()
-	EraseDownloadApplyWIM("CFS")
-EndFunc   ;==>btnWIMEDACFSClick
-Func btnWIMEDACFTClick()
-	EraseDownloadApplyWIM("CFT")
-EndFunc   ;==>btnWIMEDACFTClick
-Func btnWIMEDADesktopClick()
-	EraseDownloadApplyWIM("Desktop")
-EndFunc   ;==>btnWIMEDADesktopClick
-
 Func btnRunExplorerClick()
 	Run("X:\Program Files\ExplorerPlusPlus\Explorer++.exe", "X:\", @SW_SHOWNORMAL)
 EndFunc   ;==>btnRunExplorerClick
 
+Func btnRebootClick()
+	;
+	If MsgBox(16 + 4 + 256, "Confirm", "Do you really wish to reboot?") = 6 Then
+		Run("wpeutil reboot")
+	Else
+		Return 0
+	EndIf
+EndFunc
 Func txtCFSGhostSessionNameChange()
 
 EndFunc   ;==>txtCFSGhostSessionNameChange
