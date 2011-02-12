@@ -15,11 +15,11 @@ copy %WPEDIR%-x86\winpe.wim %WPEDIR%-x86\ISO\sources\boot.wim
 del %WPEDIR%-x86\iso\boot\bootfix.bin
 dism /Mount-WIM /WimFile:"%WPEDIR%-x86\iso\sources\boot.wim" /index:1 /MountDir:"%WPEDIR%-x86\mount"
 
-dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\drivers\intel\sata\iaahci.inf"
-dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\VBoxGuest\VBoxGuest.inf"
-dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\VBoxMouse\VBoxMouse.inf"
-dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\VBoxVideo\VBoxVideo.inf"
-dism /image:%WPEDIR%-x86\mount /add-driver /driver:"R:\Work\ImagePE\Drivers\NetKVM\Vista\x86\netkvm.inf"
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\drivers\intel\sata\iaahci.inf"
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\VBoxGuest\VBoxGuest.inf"
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\VBoxMouse\VBoxMouse.inf"
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\VBoxVideo\VBoxVideo.inf"
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\NetKVM\Vista\x86\netkvm.inf"
 
 dism /image:%WPEDIR%-x86\mount /Add-Package /PackagePath:"%AIKPATH%\Tools\PETools\x86\WinPE_FPs\WinPE-Scripting.cab"
 dism /image:%WPEDIR%-x86\mount /Add-Package /PackagePath:"%AIKPATH%\Tools\PETools\x86\WinPE_FPs\en-us\WinPE-Scripting_en-us.cab"
