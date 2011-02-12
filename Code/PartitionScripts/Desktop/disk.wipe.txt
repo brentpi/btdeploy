@@ -6,6 +6,7 @@ assign letter="P"
 create partition primary size=50000
 format fs=ntfs label="System" quick
 assign letter="Q"
+active
 create partition extended
 create partition logical
 format fs=ntfs label="Data" quick
