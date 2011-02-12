@@ -16,6 +16,9 @@
 #include <String.au3>
 #include <Debug.au3>
 
+; when updating form code. be sure to remove the absolute positioning and just leave:
+; $Form1_2 = GUICreate("AyrSHS WinPE Environment", 615, 438)
+
 Opt("GUIOnEventMode", 1)
 #Region ### START Koda GUI section ### Form=r:\work\koda\forms\ayrshsdeploy.kxf
 $Form1_2 = GUICreate("AyrSHS WinPE Environment", 615, 438)
@@ -141,17 +144,17 @@ _DebugSetup("BTDeploy Debug Output", True)
 ;Global Const $strDeploymentHost = "http://drop.edgiest.net/brent/"
 ;_DebugReportVar("strDeploymentHost", $strDeploymentHost)
 
-	Global Const $strDeploymentHost = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "DeploymentHost", "http://drop.edgiest.net/brent/")
-	Global Const $strCFSHomeIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSHomeIndex", "3")
-	Global Const $strCFSMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSMOEIndex", "2")
-	Global Const $strCFSRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSRecoveryIndex", "1")
-	Global Const $strCFSDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSDataIndex", "4")
-	Global Const $strDesktopMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopMOEIndex", "2")
-	Global Const $strDesktopRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopRecoveryIndex", "1")
-	Global Const $strDesktopDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopDataIndex", "3")
-	Global Const $strCFTMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTMOEIndex", "2")
-	Global Const $strCFTRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTRecoveryIndex", "1")
-	Global Const $strCFTDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTDataIndex", "3")
+Global Const $strDeploymentHost = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "DeploymentHost", "http://drop.edgiest.net/brent/")
+Global Const $strCFSHomeIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSHomeIndex", "3")
+Global Const $strCFSMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSMOEIndex", "1")
+Global Const $strCFSRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSRecoveryIndex", "2")
+Global Const $strCFSDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSDataIndex", "4")
+Global Const $strDesktopMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopMOEIndex", "1")
+Global Const $strDesktopRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopRecoveryIndex", "2")
+Global Const $strDesktopDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopDataIndex", "3")
+Global Const $strCFTMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTMOEIndex", "1")
+Global Const $strCFTRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTRecoveryIndex", "2")
+Global Const $strCFTDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTDataIndex", "3")
 	_DebugReportVar("strDeploymentHost", $strDeploymentHost)
 ; *******************************************************************
 
@@ -623,7 +626,7 @@ Func GenericApplyImage($radTorrent, $radGhost, $txtGhost, $fnVar, $strType, $bPr
 	$strSessionName = GUICtrlRead($txtGhost)
 	; got all of the nececssary info.
 
-	If $radGhost = True Then
+	If $bGhost = True Then
 		; do our ghosty stuff.
 		;
 		If $strSessionName = "" Then Return 0
@@ -632,7 +635,7 @@ Func GenericApplyImage($radTorrent, $radGhost, $txtGhost, $fnVar, $strType, $bPr
 		Else
 			RunWaitCheck("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "Ghosting failed. Refer to Ghosterr.txt.")
 		EndIf
-	ElseIf $radTorrent = True Then
+	ElseIf $bTorrent = True Then
 		; do our torrenty stuff.
 		;
 		ApplyWIMImage($strType, $bPreserve)
