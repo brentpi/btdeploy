@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<object type="TAForm" name="Form1_2">
+	<properties>
+		<property name="Left" vt="Int16">217</property>
+		<property name="Top" vt="Int16">447</property>
+		<property name="Width" vt="Int16">630</property>
+		<property name="Height" vt="Int16">475</property>
+		<property name="Caption" vt="String">AyrSHS WinPE Environment</property>
+		<property name="Color" vt="Ident">clBtnFace</property>
+		<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+		<property name="Font.Color" vt="Ident">clWindowText</property>
+		<property name="Font.Height" vt="Int8">-11</property>
+		<property name="Font.Name" vt="String">MS Sans Serif</property>
+		<property name="Font.Style" vt="Set"/>
+		<property name="OldCreateOrder" vt="False">False</property>
+		<property name="Visible" vt="True">True</property>
+		<property name="OnClose" vt="String">Form1Close</property>
+		<property name="Style" vt="Int32">-1798701056</property>
+		<property name="ExStyle" vt="Int16">256</property>
+		<property name="Version" vt="String">1.04</property>
+		<property name="FormOptOnEvent" vt="True">True</property>
+		<property name="FormOptExpVars" vt="False">False</property>
+		<property name="FormOptPopulate" vt="False">False</property>
+		<property name="FormOptVarsForSet" vt="False">False</property>
+		<property name="FormOptIndentChar" vt="Int8">-1</property>
+		<property name="FormOptIndentCount" vt="Int8">1</property>
+		<property name="FormOptIndentInit" vt="Int8">0</property>
+		<property name="FormOptVarScope" vt="Int8">-1</property>
+		<property name="Resizing" vt="Set"/>
+		<property name="PixelsPerInch" vt="Int8">96</property>
+		<property name="TextHeight" vt="Int8">13</property>
+	</properties>
+	<components>
+		<object type="TALabel" name="Label1">
+			<properties>
+				<property name="Left" vt="Int16">128</property>
+				<property name="Top" vt="Int8">16</property>
+				<property name="Width" vt="Int16">383</property>
+				<property name="Height" vt="Int8">37</property>
+				<property name="Caption" vt="String">AyrSHS WinPE Environment</property>
+				<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+				<property name="Font.Color" vt="Ident">clWindowText</property>
+				<property name="Font.Height" vt="Int8">-27</property>
+				<property name="Font.Name" vt="String">Tahoma</property>
+				<property name="Font.Style" vt="Set">fsBold</property>
+				<property name="ParentFont" vt="False">False</property>
+				<property name="TabOrder" vt="Int8">0</property>
+				<property name="HaveVariable" vt="False">False</property>
+				<property name="CtrlStyle" vt="Int32">1342308608</property>
+				<property name="CtrlExStyle" vt="Int8">0</property>
+				<property name="Resizing" vt="Set"/>
+			</properties>
+			<components/>
+		</object>
+		<object type="TATab" name="Tab1">
+			<properties>
+				<property name="Left" vt="Int8">16</property>
+				<property name="Top" vt="Int8">64</property>
+				<property name="Width" vt="Int16">585</property>
+				<property name="Height" vt="Int16">353</property>
+				<property name="ActivePage" vt="Ident">TabSheet4</property>
+				<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+				<property name="Font.Color" vt="Ident">clWindowText</property>
+				<property name="Font.Height" vt="Int8">-11</property>
+				<property name="Font.Name" vt="String">Arial</property>
+				<property name="Font.Style" vt="Set"/>
+				<property name="ParentFont" vt="False">False</property>
+				<property name="TabOrder" vt="Int8">1</property>
+				<property name="CtrlStyle" vt="Int32">1409482752</property>
+				<property name="CtrlExStyle" vt="Int8">0</property>
+				<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+			</properties>
+			<components>
+				<object type="TTabSheet" name="TabSheet1">
+					<properties>
+						<property name="Caption" vt="String">Computers For Students</property>
+						<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+						<property name="Font.Color" vt="Ident">clWindowText</property>
+						<property name="Font.Height" vt="Int8">-11</property>
+						<property name="Font.Name" vt="String">MS Sans Serif</property>
+						<property name="Font.Style" vt="Set"/>
+						<property name="ImageIndex" vt="Int8">-1</property>
+						<property name="ParentFont" vt="False">False</property>
+					</properties>
+					<components>
+						<object type="TAGroup" name="grpCFSWin7">
+							<properties>
+								<property name="Left" vt="Int8">12</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">257</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Windows 7</property>
+								<property name="TabOrder" vt="Int8">0</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnImgCFSWin7">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">160</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Image Machine</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnImgCFSWin7Click</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnImgCFSPWin7">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">200</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Image Machine -Preserve</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="OnClick" vt="String">btnImgCFSPWin7Click</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TARadio" name="radCFSGhost">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">32</property>
+										<property name="Width" vt="Int8">113</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Ghost</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="CtrlStyle" vt="Int32">1342242825</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TARadio" name="radCFSTorrent">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">56</property>
+										<property name="Width" vt="Int8">113</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Torrent</property>
+										<property name="Checked" vt="True">True</property>
+										<property name="TabOrder" vt="Int8">3</property>
+										<property name="TabStop" vt="True">True</property>
+										<property name="CtrlStyle" vt="Int32">1342242825</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpSettingsCFS">
+							<properties>
+								<property name="Left" vt="Int16">212</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">257</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Settings</property>
+								<property name="TabOrder" vt="Int8">1</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TALabel" name="Label9">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int8">75</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Session Name:</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAInput" name="txtCFSGhostSessionName">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">48</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">21</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="OnChange" vt="String">txtCFSGhostSessionNameChange</property>
+										<property name="CtrlStyle" vt="Int32">1342374016</property>
+										<property name="CtrlExStyle" vt="Int16">512</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TALabel" name="Label10">
+									<properties>
+										<property name="Left" vt="Int8">72</property>
+										<property name="Top" vt="Int8">120</property>
+										<property name="Width" vt="Int8">32</property>
+										<property name="Height" vt="Int8">28</property>
+										<property name="Caption" vt="String">OR</property>
+										<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+										<property name="Font.Color" vt="Ident">clWindowText</property>
+										<property name="Font.Height" vt="Int8">-21</property>
+										<property name="Font.Name" vt="String">MS Sans Serif</property>
+										<property name="Font.Style" vt="Set"/>
+										<property name="ParentFont" vt="False">False</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnCFSSelectGhostImage">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">200</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Select Ghost Image</property>
+										<property name="TabOrder" vt="Int8">3</property>
+										<property name="OnClick" vt="String">btnCFSSelectGhostImageClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+					</components>
+				</object>
+				<object type="TTabSheet" name="TabSheet2">
+					<properties>
+						<property name="Caption" vt="String">Computers for Teachers</property>
+						<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+						<property name="Font.Color" vt="Ident">clWindowText</property>
+						<property name="Font.Height" vt="Int8">-11</property>
+						<property name="Font.Name" vt="String">MS Sans Serif</property>
+						<property name="Font.Style" vt="Set"/>
+						<property name="ImageIndex" vt="Int8">-1</property>
+						<property name="ParentFont" vt="False">False</property>
+					</properties>
+					<components>
+						<object type="TAGroup" name="grpCFTWin7">
+							<properties>
+								<property name="Left" vt="Int8">12</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">257</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Windows 7</property>
+								<property name="TabOrder" vt="Int8">0</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnImgCFTWin7">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">152</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Image Machine</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnImgCFTWin7Click</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnImgCFTPWin7">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">200</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Image Machine -Preserve</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="OnClick" vt="String">btnImgCFTPWin7Click</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TARadio" name="radCFTGhost">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">32</property>
+										<property name="Width" vt="Int8">113</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Ghost</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="CtrlStyle" vt="Int32">1342242825</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TARadio" name="radCFTTorrent">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">56</property>
+										<property name="Width" vt="Int8">113</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Torrent</property>
+										<property name="Checked" vt="True">True</property>
+										<property name="TabOrder" vt="Int8">3</property>
+										<property name="TabStop" vt="True">True</property>
+										<property name="CtrlStyle" vt="Int32">1342242825</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="Group2">
+							<properties>
+								<property name="Left" vt="Int16">212</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">257</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Settings</property>
+								<property name="TabOrder" vt="Int8">1</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TALabel" name="Label7">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int8">75</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Session Name:</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAInput" name="txtCFTGhostSessionName">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">48</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">21</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="OnChange" vt="String">txtCFTGhostSessionNameChange</property>
+										<property name="CtrlStyle" vt="Int32">1342374016</property>
+										<property name="CtrlExStyle" vt="Int16">512</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TALabel" name="Label8">
+									<properties>
+										<property name="Left" vt="Int8">72</property>
+										<property name="Top" vt="Int8">120</property>
+										<property name="Width" vt="Int8">32</property>
+										<property name="Height" vt="Int8">28</property>
+										<property name="Caption" vt="String">OR</property>
+										<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+										<property name="Font.Color" vt="Ident">clWindowText</property>
+										<property name="Font.Height" vt="Int8">-21</property>
+										<property name="Font.Name" vt="String">MS Sans Serif</property>
+										<property name="Font.Style" vt="Set"/>
+										<property name="ParentFont" vt="False">False</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnCFTSelectGhostImage">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">200</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Select Ghost Image</property>
+										<property name="TabOrder" vt="Int8">3</property>
+										<property name="OnClick" vt="String">btnCFTSelectGhostImageClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+					</components>
+				</object>
+				<object type="TTabSheet" name="TabSheet3">
+					<properties>
+						<property name="Caption" vt="String">Desktop Machines</property>
+						<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+						<property name="Font.Color" vt="Ident">clWindowText</property>
+						<property name="Font.Height" vt="Int8">-11</property>
+						<property name="Font.Name" vt="String">MS Sans Serif</property>
+						<property name="Font.Style" vt="Set"/>
+						<property name="ImageIndex" vt="Int8">-1</property>
+						<property name="ParentFont" vt="False">False</property>
+					</properties>
+					<components>
+						<object type="TAGroup" name="grpDeskWin7">
+							<properties>
+								<property name="Left" vt="Int8">12</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">257</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Windows 7</property>
+								<property name="TabOrder" vt="Int8">0</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnImgDWin7">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">152</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Image Machine</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnImgDWin7Click</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnImgDPWin7">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">200</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Image Machine -Preserve</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="OnClick" vt="String">btnImgDPWin7Click</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TARadio" name="radDesktopGhost">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">32</property>
+										<property name="Width" vt="Int8">113</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Ghost</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="CtrlStyle" vt="Int32">1342242825</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TARadio" name="radDesktopTorrent">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">56</property>
+										<property name="Width" vt="Int8">113</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Torrent</property>
+										<property name="Checked" vt="True">True</property>
+										<property name="TabOrder" vt="Int8">3</property>
+										<property name="TabStop" vt="True">True</property>
+										<property name="CtrlStyle" vt="Int32">1342242825</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpDesktopSettings">
+							<properties>
+								<property name="Left" vt="Int16">212</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">257</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Settings</property>
+								<property name="TabOrder" vt="Int8">1</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TALabel" name="Label5">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int8">75</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Session Name:</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAInput" name="txtDesktopSession">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">48</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">21</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="OnChange" vt="String">txtDesktopSessionChange</property>
+										<property name="CtrlStyle" vt="Int32">1342374016</property>
+										<property name="CtrlExStyle" vt="Int16">512</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TALabel" name="Label6">
+									<properties>
+										<property name="Left" vt="Int8">72</property>
+										<property name="Top" vt="Int8">120</property>
+										<property name="Width" vt="Int8">32</property>
+										<property name="Height" vt="Int8">28</property>
+										<property name="Caption" vt="String">OR</property>
+										<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+										<property name="Font.Color" vt="Ident">clWindowText</property>
+										<property name="Font.Height" vt="Int8">-21</property>
+										<property name="Font.Name" vt="String">MS Sans Serif</property>
+										<property name="Font.Style" vt="Set"/>
+										<property name="ParentFont" vt="False">False</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnDesktopGhostSelectImage">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">200</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Select Ghost Image</property>
+										<property name="TabOrder" vt="Int8">3</property>
+										<property name="OnClick" vt="String">btnDesktopGhostSelectImageClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+					</components>
+				</object>
+				<object type="TTabSheet" name="TabSheet4">
+					<properties>
+						<property name="Caption" vt="String">Utilities</property>
+						<property name="Font.Charset" vt="Ident">DEFAULT_CHARSET</property>
+						<property name="Font.Color" vt="Ident">clWindowText</property>
+						<property name="Font.Height" vt="Int8">-11</property>
+						<property name="Font.Name" vt="String">MS Sans Serif</property>
+						<property name="Font.Style" vt="Set"/>
+						<property name="ImageIndex" vt="Int8">-1</property>
+						<property name="ParentFont" vt="False">False</property>
+					</properties>
+					<components>
+						<object type="TAGroup" name="Ghost">
+							<properties>
+								<property name="Left" vt="Int8">12</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int8">73</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Ghost</property>
+								<property name="TabOrder" vt="Int8">0</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnRunGhost">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Run Ghost32</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnRunGhostClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpBCD">
+							<properties>
+								<property name="Left" vt="Int8">12</property>
+								<property name="Top" vt="Int8">103</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">129</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">BCD</property>
+								<property name="TabOrder" vt="Int8">1</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnBCDFix">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">80</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Fix BCD</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnBCDFixClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAInput" name="txtBCDDrive">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">48</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">21</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="Text" vt="String">C</property>
+										<property name="OnChange" vt="String">txtBCDDriveChange</property>
+										<property name="CtrlStyle" vt="Int32">1342374016</property>
+										<property name="CtrlExStyle" vt="Int16">512</property>
+										<property name="Resizing" vt="Set">DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TALabel" name="Label2">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int8">106</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Drive to fix (ex.colon):</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpRunCMD">
+							<properties>
+								<property name="Left" vt="Int16">204</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int8">73</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Command Line</property>
+								<property name="TabOrder" vt="Int8">2</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnRunCmd">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Run Command Line</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnRunCmdClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpFixGrub">
+							<properties>
+								<property name="Left" vt="Int16">204</property>
+								<property name="Top" vt="Int8">103</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int16">129</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Grub4Dos</property>
+								<property name="TabOrder" vt="Int8">3</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnFixGrub4Dos">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">80</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Fix Grub4Dos Boot Sector</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnFixGrub4DosClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TALabel" name="Label3">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">Fetch Grub4DOS Boot Sector</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+								<object type="TALabel" name="Label4">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">40</property>
+										<property name="Width" vt="Int8">107</property>
+										<property name="Height" vt="Int8">17</property>
+										<property name="Caption" vt="String">and write to the MBR.</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="HaveVariable" vt="False">False</property>
+										<property name="CtrlStyle" vt="Int32">1342308608</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set"/>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpGDisk">
+							<properties>
+								<property name="Left" vt="Int16">396</property>
+								<property name="Top" vt="Int8">15</property>
+								<property name="Width" vt="Int16">169</property>
+								<property name="Height" vt="Int16">297</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">GDisk</property>
+								<property name="TabOrder" vt="Int8">4</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnDiskWipe1">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int16">137</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Wipe Disk 1</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnDiskWipe1Click</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnUnhideAll">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">64</property>
+										<property name="Width" vt="Int16">137</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Unhide All</property>
+										<property name="TabOrder" vt="Int8">1</property>
+										<property name="OnClick" vt="String">btnUnhideAllClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnPartitionCFS">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">104</property>
+										<property name="Width" vt="Int16">137</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Partition CFS</property>
+										<property name="TabOrder" vt="Int8">2</property>
+										<property name="OnClick" vt="String">btnPartitionCFSClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnPartitionCFT">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">144</property>
+										<property name="Width" vt="Int16">137</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Partition CFT</property>
+										<property name="TabOrder" vt="Int8">3</property>
+										<property name="OnClick" vt="String">btnPartitionCFTClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnPartitionDesktop">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">184</property>
+										<property name="Width" vt="Int16">137</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Partition Desktop</property>
+										<property name="TabOrder" vt="Int8">4</property>
+										<property name="OnClick" vt="String">btnPartitionDesktopClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+								<object type="TAButton" name="btnWipeDiskDOD">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int16">224</property>
+										<property name="Width" vt="Int16">137</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Wipe Disk 1 - DOD</property>
+										<property name="TabOrder" vt="Int8">5</property>
+										<property name="OnClick" vt="String">btnWipeDiskDODClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpRunExplorer">
+							<properties>
+								<property name="Left" vt="Int8">12</property>
+								<property name="Top" vt="Int16">239</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int8">73</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Explorer</property>
+								<property name="TabOrder" vt="Int8">5</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnRunExplorer">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Run Explorer</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnRunExplorerClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+						<object type="TAGroup" name="grpReboot">
+							<properties>
+								<property name="Left" vt="Int16">204</property>
+								<property name="Top" vt="Int16">239</property>
+								<property name="Width" vt="Int16">177</property>
+								<property name="Height" vt="Int8">73</property>
+								<property name="CtrlStyle" vt="Int32">1342308359</property>
+								<property name="CtrlExStyle" vt="Int8">0</property>
+								<property name="Caption" vt="String">Reboot</property>
+								<property name="TabOrder" vt="Int8">6</property>
+								<property name="Resizing" vt="Set"/>
+							</properties>
+							<components>
+								<object type="TAButton" name="btnReboot">
+									<properties>
+										<property name="Left" vt="Int8">16</property>
+										<property name="Top" vt="Int8">24</property>
+										<property name="Width" vt="Int16">145</property>
+										<property name="Height" vt="Int8">33</property>
+										<property name="Caption" vt="String">Reboot</property>
+										<property name="TabOrder" vt="Int8">0</property>
+										<property name="OnClick" vt="String">btnRebootClick</property>
+										<property name="Color" vt="Ident">clBtnFace</property>
+										<property name="CtrlStyle" vt="Int32">1342373888</property>
+										<property name="CtrlExStyle" vt="Int8">0</property>
+										<property name="Resizing" vt="Set">DockWidth, DockHeight</property>
+									</properties>
+									<components/>
+								</object>
+							</components>
+						</object>
+					</components>
+				</object>
+			</components>
+		</object>
+	</components>
+</object>
