@@ -264,13 +264,14 @@ Func ApplyWIMImage($strName, $bPreserve)
 	EndIf
 
 
-	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
-	If ($outTorrent = 0) And (@error <> 0) Then
-		; error in torrent download :(
-		_DebugReport("EraseDownloadApplyWIM: Error downloading torrent.  Download Location = " & $drvData)
-		MsgBox(16, "Error", "Error downloading torrent.  Tried to download to: " & $drvData)
-		Return 0
-	EndIf
+;~ 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
+;~ 	If ($outTorrent = 0) And (@error <> 0) Then
+;~ 		; error in torrent download :(
+;~ 		_DebugReport("EraseDownloadApplyWIM: Error downloading torrent.  Download Location = " & $drvData)
+;~ 		MsgBox(16, "Error", "Error downloading torrent.  Tried to download to: " & $drvData)
+;~ 		Return 0
+;~ 	EndIf
+	GrabFile($strDeploymentHost & $strName & ".torrent", $drvData)
 
 	; ALL Images will be called "Image.WIM"
 	; ie: D:\CFS\Image.WIM
@@ -400,14 +401,38 @@ Func GetIndexOfWim($strName, $strPartition)
 EndFunc
 
 Func GrabFile($strURL, $strOut)
-	Local $outFile
-	$outFile = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_SHOWNORMAL)
-	If ($outFile = 0) And (@error <> 0) Then
-		; error in torrent download :(
-		_DebugReport("GrabFile: Error downloading file.  URL = " & $strURL & " Path = " & $strOut)
-		Return 0
-	EndIf
-	Return 1
+;~ 	Local $outFile
+;~ 	$outFile = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_SHOWNORMAL)
+;~ 	If ($outFile = 0) And (@error <> 0) Then
+;~ 		; error in torrent download :(
+;~ 		_DebugReport("GrabFile: Error downloading file.  URL = " & $strURL & " Path = " & $strOut)
+;~ 		Return 0
+;~ 	EndIf
+;~ 	Return 1
+	ProgressOn("Downloading " & $strURL, "Work in progress...", "0 percent complete")
+
+	Local $foo = Run(@ComSpec & " /c " & "X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_HIDE, $STDERR_CHILD + $STDOUT_CHILD)
+	Local $line
+	Local $tSeedMin = 0
+	While 1
+		$line = StdoutRead($foo)
+		If @error Then ExitLoop
+		$arrPercent = _StringBetween($line, "MiB(", ") ")
+		$arrTimeLeft = _StringBetween($line, "ETA:", "]")
+
+		If StringInStr($line, "Seeding") Then
+			;
+			ProgressSet(100, "100% complete - seeding for 5 min...")
+		EndIf
+
+		If (IsArray($arrPercent) = 1) And (IsArray($arrTimeLeft) = 1) Then
+			; set progress.
+			ProgressSet(Number($arrPercent[0]), Number($arrPercent[0]) & "% complete - " & $arrTimeLeft[0] & " remaining.")
+		EndIf
+	Wend
+
+	_DebugReport("Destroyed progress for: " & $strURL)
+	ProgressOff()
 EndFunc
 
 Func CreateBCDStore($strDrive)
