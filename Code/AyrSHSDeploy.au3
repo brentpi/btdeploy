@@ -283,19 +283,19 @@ Func ApplyWIMImage($strName, $bPreserve)
 	EndIf
 
 	; Apply Image.
+	ImageX_Apply($strName, "System")
+	ImageX_Apply($strName, "Reserved")
+	ImageX_Apply($strName, "Data")
+
+	#cs
 	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "System") & " " & $drvSystem, "Error applying System partition") = 0 Then Return 0
-	;If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 1 " & $drvSystem, "Error applying System partition") = 0 Then Return 0
-
 	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Reserved") & " " & $drvRecovery, "Error applying Recovery partition") = 0 Then Return 0
-
-	;If $strName == "CFS" Then
 	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Data") & " " & $drvData, "Error applying Data partition") = 0 Then Return 0
-	;Else
-	;	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM 3 " & $drvData, "Error applying Data partition") = 0 Then Return 0
-	;EndIf
+	#ce
 
 	If $strName == "CFS" Then
-		If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Home") & " " & $drvHome, "Failed to apply Home Partition") = 0 Then Return 0
+		ImageX_Apply($strName, "Home")
+		;If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Home") & " " & $drvHome, "Failed to apply Home Partition") = 0 Then Return 0
 	EndIf
 
 	; This part fixes the BCD.  Merge this code into the BCD Fix function when it is tested and proven mature.  Otherwise revert to old code.
@@ -312,39 +312,11 @@ Func ApplyWIMImage($strName, $bPreserve)
 		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:4", "Failed to activate Home partition")
 		RunWaitCheck("bcdboot " & $drvHome & "Windows /l en-us", "Failed to run bcdboot for Home")
 		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:3", "Failed to activate System partition")
-		#cs
-		If (GrabFile($strDeploymentHost & $strName & "/stage2.txt", "X:\") = 0) Or (GrabFile($strDeploymentHost & $strName & "/stage3.txt", "X:\") = 0) Or (GrabFile($strDeploymentHost & $strName & "/stage4.txt", "X:\") = 0) Then
-			_DebugReport("Failed to DL partition scripts.")
-			Return 0
-		EndIf
-		RunWaitCheck("diskpart /s X:\stage2.txt", "Error running stage 2 partition stuff.")
-		$drvSystem = FindDriveByLabel("System")
-		$drvData = FindDriveByLabel("Data")
-		$drvHome = FindDriveByLabel("Home")
-		$drvRecovery = FindDriveByLabel("Reserved")
-		RunWaitCheck("bcdboot " & $drvHome & "Windows /s " & StringLeft($drvHome, 2), "Error updating Home BCD")
-		If CreateBCDStore($drvHome) = 0 Then Return 0
-		RunWaitCheck("diskpart /s X:\stage3.txt", "Error running stage 3 partition stuff.")
-		$drvSystem = FindDriveByLabel("System")
-		$drvData = FindDriveByLabel("Data")
-		$drvHome = FindDriveByLabel("Home")
-		$drvRecovery = FindDriveByLabel("Reserved")
-		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-		If CreateBCDStore($drvSystem) = 0 Then Return 0
-		RunWaitCheck("diskpart /s X:\stage4.txt", "Error running stage 4 partition stuff.")
-		$drvSystem = FindDriveByLabel("System")
-		$drvData = FindDriveByLabel("Data")
-		$drvHome = FindDriveByLabel("Home")
-		$drvRecovery = FindDriveByLabel("Reserved")
-		#ce
-		;If RunWaitCheck("X:\Program Files\MBRFix\MBRFix.exe /drive 0 /partition 3 setactivepartition /yes", "Couldnt set active partition.") = 0 Then Return 0
 		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
 		; we are back to how we were before.
 	Else
 		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 		; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot. Probably not for CFS though.
-		;If CreateBCDStore($drvSystem) = 0 Then Return 0
-		; If RunWaitCheck("X:\Windows\System32\bootsect.exe " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2) & " /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 		If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 	EndIf
 
@@ -364,6 +336,33 @@ Func ApplyWIMImage($strName, $bPreserve)
 		Return 0
 	EndIf
 EndFunc   ;==>EraseDownloadApplyWIM
+
+Func ImageX_Apply($strName, $strPartition)
+	;
+	ProgressOn("Applying " & $strPartition & " Image", "Work in progress...", "0 percent complete")
+
+	$drvData = FindDriveByLabel("Data")
+	_DebugReport("Starting ImageX_Apply for: " & $strPartition)
+	Local $foo = Run(@ComSpec & " /c " & "X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, $strPartition) & " " & FindDriveByLabel($strPartition), @SystemDir, @SW_HIDE, $STDERR_CHILD + $STDOUT_CHILD)
+	Local $line
+	While 1
+		$line = StdoutRead($foo)
+		If @error Then ExitLoop
+;~ 		$progBrackets = StringLeft($line, 8) ; std output = [   10% ]
+;~ 		$progBrackets = StringReplace($progBrackets, "[", "") ; "   10% ]"
+;~ 		$progBrackets = StringReplace($progBrackets, "]", "") ; "   10% "
+;~ 		$progBrackets = StringReplace($progBrackets, " ", "") ;
+		$iPercent = Number(StringRegExpReplace($line, "[\[\] %]", ""))
+		$arrTimeRem = _StringBetween($line, "progress: ", " remaining")
+		; should only be one result.
+		If IsArray($arrTimeRem) = 1 Then
+			ProgressSet($iPercent, $iPercent & "% complete - " & $arrTimeRem[0] & " remaining.")
+		EndIf
+	Wend
+
+	_DebugReport("Destroyed progress for: " & $strPartition)
+	ProgressOff()
+EndFunc
 
 Func GetIndexOfWim($strName, $strPartition)
 	;
@@ -483,26 +482,6 @@ Func CreateBCDStore($strDrive)
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /displayorder {" & $bcdGuid & "}", "Failed to set display order.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /default {" & $bcdGuid & "}", "Failed to set default.", $strDrive & "Windows\System32") = 0 Then Return 0
 	Return 1
-	#cs BCD Commands.
-		del C:\boot\bcd
-		bcdedit /createstore c:\boot\bcd.temp
-		bcdedit.exe /store c:\boot\bcd.temp /create {bootmgr} /d "Windows Boot Manager"
-		bcdedit.exe /import c:\boot\bcd.temp
-		bcdedit.exe /set {bootmgr} device partition=C:
-		bcdedit.exe /set {bootmgr} locale en-US
-		bcdedit.exe /timeout 10
-		del c:\boot\bcd.temp
-		--- OS --
-		bcdedit.exe /create /d "Windows 7 Enterprise Edition" /application osloader
-		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} device partition=C:
-		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} osdevice partition=C:
-		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} path \Windows\system32\winload.exe
-		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} systemroot \Windows
-		bcdedit.exe /set {c0dfc4fa-cb21-11dc-81bf-005056c00008} locale en-US
-		--- DISPLAY --
-		bcdedit.exe /displayorder {c0dfc4fa-cb21-11dc-81bf-005056c00008}
-		bcdedit.exe /default {c0dfc4fa-cb21-11dc-81bf-005056c00008}
-	#ce
 EndFunc   ;==>CreateBCDStore
 
 Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
