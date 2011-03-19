@@ -25,107 +25,102 @@ $Form1_2 = GUICreate("AyrSHS WinPE Environment", 615, 438)
 GUISetOnEvent($GUI_EVENT_CLOSE, "Form1Close")
 $Label1 = GUICtrlCreateLabel(IniRead("X:\Program Files\DETA\Settings.ini", "Main", "GuiMainLabel", "AyrSHS WinPE Environment"), 128, 16, 383, 37)
 GUICtrlSetFont(-1, 20, 800, 0, "Tahoma")
-$Tab1 = GUICtrlCreateTab(16, 64, 585, 353)
+$Tab1 = GUICtrlCreateTab(16, 64, 585, 353, $WS_GROUP)
+GUICtrlSetResizing(-1, $GUI_DOCKWIDTH+$GUI_DOCKHEIGHT)
 $TabSheet1 = GUICtrlCreateTabItem("Computers For Students")
 $grpCFSWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 257)
-$btnImgCFSWin7 = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33)
+$btnImgCFSWin7 = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnImgCFSWin7Click")
-$btnImgCFSPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33)
+$btnImgCFSPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnImgCFSPWin7Click")
 $radCFSGhost = GUICtrlCreateRadio("Ghost", 48, 136, 113, 17)
 $radCFSTorrent = GUICtrlCreateRadio("Torrent", 48, 160, 113, 17)
 GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpSettingsCFS = GUICtrlCreateGroup("Settings", 232, 104, 177, 257)
-$Label9 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17)
-$txtCFSGhostSessionName = GUICtrlCreateInput("", 248, 152, 145, 21)
+$Label9 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17, $WS_GROUP)
+$txtCFSGhostSessionName = GUICtrlCreateInput("", 248, 152, 145, 21, BitOR($ES_AUTOHSCROLL,$WS_GROUP))
 GUICtrlSetOnEvent(-1, "txtCFSGhostSessionNameChange")
-$Label10 = GUICtrlCreateLabel("OR", 304, 224, 32, 28)
+$Label10 = GUICtrlCreateLabel("OR", 304, 224, 32, 28, $WS_GROUP)
 GUICtrlSetFont(-1, 16, 400, 0, "MS Sans Serif")
-$btnCFSSelectGhostImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33)
+$btnCFSSelectGhostImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnCFSSelectGhostImageClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $TabSheet2 = GUICtrlCreateTabItem("Computers for Teachers")
 $grpCFTWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 257)
-$btnImgCFTWin7 = GUICtrlCreateButton("Image Machine", 48, 256, 145, 33)
+$btnImgCFTWin7 = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnImgCFTWin7Click")
-$btnImgCFTPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33)
+$btnImgCFTPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnImgCFTPWin7Click")
 $radCFTGhost = GUICtrlCreateRadio("Ghost", 48, 136, 113, 17)
 $radCFTTorrent = GUICtrlCreateRadio("Torrent", 48, 160, 113, 17)
 GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $Group2 = GUICtrlCreateGroup("Settings", 232, 104, 177, 257)
-$Label7 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17)
-$txtCFTGhostSessionName = GUICtrlCreateInput("", 248, 152, 145, 21)
+$Label7 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17, $WS_GROUP)
+$txtCFTGhostSessionName = GUICtrlCreateInput("", 248, 152, 145, 21, BitOR($ES_AUTOHSCROLL,$WS_GROUP))
 GUICtrlSetOnEvent(-1, "txtCFTGhostSessionNameChange")
-$Label8 = GUICtrlCreateLabel("OR", 304, 224, 32, 28)
+$Label8 = GUICtrlCreateLabel("OR", 304, 224, 32, 28, $WS_GROUP)
 GUICtrlSetFont(-1, 16, 400, 0, "MS Sans Serif")
-$btnCFTSelectGhostImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33)
+$btnCFTSelectGhostImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnCFTSelectGhostImageClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $TabSheet3 = GUICtrlCreateTabItem("Desktop Machines")
 $grpDeskWin7 = GUICtrlCreateGroup("Windows 7", 32, 104, 177, 257)
-$btnImgDWin7 = GUICtrlCreateButton("Image Machine", 48, 256, 145, 33)
+$btnImgDWin7 = GUICtrlCreateButton("Image Machine", 48, 264, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnImgDWin7Click")
-$btnImgDPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33)
+$btnImgDPWin7 = GUICtrlCreateButton("Image Machine -Preserve", 48, 304, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnImgDPWin7Click")
 $radDesktopGhost = GUICtrlCreateRadio("Ghost", 48, 136, 113, 17)
 $radDesktopTorrent = GUICtrlCreateRadio("Torrent", 48, 160, 113, 17)
 GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpDesktopSettings = GUICtrlCreateGroup("Settings", 232, 104, 177, 257)
-$Label5 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17)
-$txtDesktopSession = GUICtrlCreateInput("", 248, 152, 145, 21)
+$Label5 = GUICtrlCreateLabel("Session Name:", 248, 128, 75, 17, $WS_GROUP)
+$txtDesktopSession = GUICtrlCreateInput("", 248, 152, 145, 21, BitOR($ES_AUTOHSCROLL,$WS_GROUP))
 GUICtrlSetOnEvent(-1, "txtDesktopSessionChange")
-$Label6 = GUICtrlCreateLabel("OR", 304, 224, 32, 28)
+$Label6 = GUICtrlCreateLabel("OR", 304, 224, 32, 28, $WS_GROUP)
 GUICtrlSetFont(-1, 16, 400, 0, "MS Sans Serif")
-$btnDesktopGhostSelectImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33)
+$btnDesktopGhostSelectImage = GUICtrlCreateButton("Select Ghost Image", 248, 304, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnDesktopGhostSelectImageClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $TabSheet4 = GUICtrlCreateTabItem("Utilities")
 GUICtrlSetState(-1,$GUI_SHOW)
 $Ghost = GUICtrlCreateGroup("Ghost", 32, 104, 177, 73)
-$btnRunGhost = GUICtrlCreateButton("Run Ghost32", 48, 128, 145, 33)
+$btnRunGhost = GUICtrlCreateButton("Run Ghost32", 48, 128, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnRunGhostClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpBCD = GUICtrlCreateGroup("BCD", 32, 192, 177, 129)
-$btnBCDFix = GUICtrlCreateButton("Fix BCD", 48, 272, 145, 33)
+$btnBCDFix = GUICtrlCreateButton("Fix BCD", 48, 272, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnBCDFixClick")
-$txtBCDDrive = GUICtrlCreateInput("C", 48, 240, 145, 21)
+$txtBCDDrive = GUICtrlCreateInput("C", 48, 240, 145, 21, BitOR($ES_AUTOHSCROLL,$WS_GROUP))
 GUICtrlSetOnEvent(-1, "txtBCDDriveChange")
-$Label2 = GUICtrlCreateLabel("Drive to fix (ex.colon):", 48, 216, 106, 17)
+$Label2 = GUICtrlCreateLabel("Drive to fix (ex.colon):", 48, 216, 106, 17, $WS_GROUP)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpRunCMD = GUICtrlCreateGroup("Command Line", 224, 104, 177, 73)
-$btnRunCmd = GUICtrlCreateButton("Run Command Line", 240, 128, 145, 33)
+$btnRunCmd = GUICtrlCreateButton("Run Command Line", 240, 128, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnRunCmdClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-$grpFixGrub = GUICtrlCreateGroup("Grub4Dos", 224, 192, 177, 129)
-$btnFixGrub4Dos = GUICtrlCreateButton("Fix Grub4Dos Boot Sector", 240, 272, 145, 33)
-GUICtrlSetOnEvent(-1, "btnFixGrub4DosClick")
-$Label3 = GUICtrlCreateLabel("Fetch Grub4DOS Boot Sector", 240, 216, 145, 17)
-$Label4 = GUICtrlCreateLabel("and write to the MBR.", 240, 232, 107, 17)
-GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpGDisk = GUICtrlCreateGroup("GDisk", 416, 104, 169, 297)
-$btnDiskWipe1 = GUICtrlCreateButton("Wipe Disk 1", 432, 128, 137, 33)
+$btnDiskWipe1 = GUICtrlCreateButton("Wipe Disk 1", 432, 128, 137, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnDiskWipe1Click")
-$btnUnhideAll = GUICtrlCreateButton("Unhide All", 432, 168, 137, 33)
+$btnUnhideAll = GUICtrlCreateButton("Unhide All", 432, 168, 137, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnUnhideAllClick")
-$btnPartitionCFS = GUICtrlCreateButton("Partition CFS", 432, 208, 137, 33)
+$btnPartitionCFS = GUICtrlCreateButton("Partition CFS", 432, 208, 137, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnPartitionCFSClick")
-$btnPartitionCFT = GUICtrlCreateButton("Partition CFT", 432, 248, 137, 33)
+$btnPartitionCFT = GUICtrlCreateButton("Partition CFT", 432, 248, 137, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnPartitionCFTClick")
-$btnPartitionDesktop = GUICtrlCreateButton("Partition Desktop", 432, 288, 137, 33)
+$btnPartitionDesktop = GUICtrlCreateButton("Partition Desktop", 432, 288, 137, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnPartitionDesktopClick")
-$btnWipeDiskDOD = GUICtrlCreateButton("Wipe Disk 1 - DOD", 432, 328, 137, 33)
+$btnWipeDiskDOD = GUICtrlCreateButton("Wipe Disk 1 - DOD", 432, 328, 137, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnWipeDiskDODClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpRunExplorer = GUICtrlCreateGroup("Explorer", 32, 328, 177, 73)
-$btnRunExplorer = GUICtrlCreateButton("Run Explorer", 48, 352, 145, 33)
+$btnRunExplorer = GUICtrlCreateButton("Run Explorer", 48, 352, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnRunExplorerClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpReboot = GUICtrlCreateGroup("Reboot", 224, 328, 177, 73)
-$btnReboot = GUICtrlCreateButton("Reboot", 240, 352, 145, 33)
+$btnReboot = GUICtrlCreateButton("Reboot", 240, 352, 145, 33, $WS_GROUP)
 GUICtrlSetOnEvent(-1, "btnRebootClick")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
@@ -139,13 +134,8 @@ _DebugSetup("BTDeploy Debug Output", True)
 ; UPDATE WITH YOUR OWN DEPLOYMENT HOST.
 ; THIS IS WHERE YOUR TORRENTS ARE.
 ; ******************************************************************
-; Global Const $strDeploymentHost = "http://10.148.44.3/deployment/"
-; Global Const $strDeploymentHost = "http://brentp.net/deployment/"
-;Global Const $strDeploymentHost = "http://drop.edgiest.net/brent/"
-;_DebugReportVar("strDeploymentHost", $strDeploymentHost)
 
 Global Const $strDeploymentHost = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "DeploymentHost", "http://drop.edgiest.net/brent/")
-Global Const $strCFSHomeIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSHomeIndex", "3")
 Global Const $strCFSMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSMOEIndex", "1")
 Global Const $strCFSRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSRecoveryIndex", "2")
 Global Const $strCFSDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSDataIndex", "4")
@@ -183,26 +173,21 @@ Func PartitionMachine($strType, $bEnableOutput = True)
 	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=X:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strType & "/disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
 	If ($outDownload = 0) And (@error <> 0) Then
 		If $bEnableOutput Then
-			;MsgBox(0, "Download Failed", "Download of partition info failed.")
 			_DebugReport("Download of partition script failed.", True)
 		EndIf
 		Return 0
 	EndIf
 	; assume disk partition info is at X:\disk.wipe.txt
-	; now run gdisk32.
-	;$outPartition = RunWait("X:\Program Files\Ghost\Gdisk32.exe 1 /BATCH:X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
 	$outPartition = RunWait("diskpart /s X:\disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
 	If ($outPartition = 0) And (@error <> 0) Then
 		If $bEnableOutput Then
-			;MsgBox(0, "Error", "Partitioning failed.  See Gdisk32 for more info.")
-			_DebugReport("Partitioning failed. See GDisk32.", True)
+			_DebugReport("Partitioning failed. See diskpart", True)
 		EndIf
 		Return 0
 	EndIf
 
 	If $bEnableOutput Then
 		_DebugReport("Successfully partitioned drive.")
-		;MsgBox(0, "Success!", "Partitioned machine!")
 	EndIf
 	Return 1
 EndFunc   ;==>PartitionMachine
@@ -224,9 +209,10 @@ Func FindDriveByLabel($strLabel)
 EndFunc   ;==>FindDriveByLabel
 
 Func ApplyWIMImage($strName, $bPreserve)
+	; This is the new non-dual boot method.
 	Local $outDownload, $outPartition, $outTorrent, $outApplySystem, $outApplyRecovery
 	Local $outApplyData, $outApplyHome
-	Local $drvSystem, $drvHome, $drvRecovery, $drvData, $outSetPartActive
+	Local $drvSystem, $drvRecovery, $drvData, $outSetPartActive
 
 	If PartitionMachine($strName, False) = 0 Then
 		_DebugReport("EraseDownloadApplyWIM: Failed to partition machine.  Check download on server, or presence of gdisk32.")
@@ -234,43 +220,18 @@ Func ApplyWIMImage($strName, $bPreserve)
 		Return 0
 	EndIf
 
-	If $strName == "CFS" Then
-		$drvSystem = FindDriveByLabel("System")
-		$drvData = FindDriveByLabel("Data")
-		$drvHome = FindDriveByLabel("Home")
-		$drvRecovery = FindDriveByLabel("Reserved")
-
-		If ($drvSystem == "") Or ($drvData == "") Or ($drvHome == "") Or ($drvRecovery == "") Then
-			_DebugReport("EraseDownloadApplyWIM: Failed to detect partitions.")
-			_DebugReportVar("drvSystem", $drvSystem)
-			_DebugReportVar("drvData", $drvData)
-			_DebugReportVar("drvHome", $drvHome)
-			_DebugReportVar("drvRecovery", $drvRecovery)
-			MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
-			Return 0
-		EndIf
-	Else
-		$drvSystem = FindDriveByLabel("System")
-		$drvData = FindDriveByLabel("Data")
-		$drvRecovery = FindDriveByLabel("Reserved")
-		If ($drvSystem == "") Or ($drvData == "") Or ($drvRecovery == "") Then
-			_DebugReport("EraseDownloadApplyWIM: Failed to detect partitions.")
-			_DebugReportVar("drvSystem", $drvSystem)
-			_DebugReportVar("drvData", $drvData)
-			_DebugReportVar("drvRecovery", $drvRecovery)
-			MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
-			Return 0
-		EndIf
+	$drvSystem = FindDriveByLabel("System")
+	$drvData = FindDriveByLabel("Data")
+	$drvRecovery = FindDriveByLabel("Reserved")
+	If ($drvSystem == "") Or ($drvData == "") Or ($drvRecovery == "") Then
+		_DebugReport("EraseDownloadApplyWIM: Failed to detect partitions.")
+		_DebugReportVar("drvSystem", $drvSystem)
+		_DebugReportVar("drvData", $drvData)
+		_DebugReportVar("drvRecovery", $drvRecovery)
+		MsgBox(16, "Error", "Failed to detect partitions. Please try again.")
+		Return 0
 	EndIf
 
-
-;~ 	$outTorrent = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $drvData & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strName & ".torrent", $drvData, @SW_SHOWNORMAL)
-;~ 	If ($outTorrent = 0) And (@error <> 0) Then
-;~ 		; error in torrent download :(
-;~ 		_DebugReport("EraseDownloadApplyWIM: Error downloading torrent.  Download Location = " & $drvData)
-;~ 		MsgBox(16, "Error", "Error downloading torrent.  Tried to download to: " & $drvData)
-;~ 		Return 0
-;~ 	EndIf
 	GrabFile($strDeploymentHost & $strName & ".torrent", $drvData)
 
 	; ALL Images will be called "Image.WIM"
@@ -288,38 +249,12 @@ Func ApplyWIMImage($strName, $bPreserve)
 	ImageX_Apply($strName, "Reserved")
 	ImageX_Apply($strName, "Data")
 
-	#cs
-	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "System") & " " & $drvSystem, "Error applying System partition") = 0 Then Return 0
-	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Reserved") & " " & $drvRecovery, "Error applying Recovery partition") = 0 Then Return 0
-	If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Data") & " " & $drvData, "Error applying Data partition") = 0 Then Return 0
-	#ce
-
-	If $strName == "CFS" Then
-		ImageX_Apply($strName, "Home")
-		;If RunWaitCheck("X:\Windows\System32\imagex.exe /apply " & $drvData & $strName & "\Image.WIM " & GetIndexOfWim($strName, "Home") & " " & $drvHome, "Failed to apply Home Partition") = 0 Then Return 0
-	EndIf
-
 	; This part fixes the BCD.  Merge this code into the BCD Fix function when it is tested and proven mature.  Otherwise revert to old code.
 	; hopefully this is more precise.
 
-	If $strName == "CFS" Then
-		; Unhide drives.
-		RunWaitCheck("attrib -S -H -R " & $drvSystem & "Boot\BCD", "Failed to remove attributes on System BCD")
-		RunWaitCheck("attrib -S -H -R " & $drvHome & "Boot\BCD", "Failed to remove attributes on Home BCD")
-		FileDelete($drvSystem & "Boot\BCD")
-		FileDelete($drvHome & "Boot\BCD")
-		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:3", "Failed to activate System partition")
-		RunWaitCheck("bcdboot " & $drvSystem & "Windows /l en-us", "Failed to run bcdboot for system.")
-		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:4", "Failed to activate Home partition")
-		RunWaitCheck("bcdboot " & $drvHome & "Windows /l en-us", "Failed to run bcdboot for Home")
-		RunWaitCheck("X:\Program Files\Ghost\Gdisk32.exe 1 /ACT /P:3", "Failed to activate System partition")
-		If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
-		; we are back to how we were before.
-	Else
-		RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-		; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot. Probably not for CFS though.
-		If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
-	EndIf
+	RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
+	; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot. Probably not for CFS though.
+	If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 
 	If FileExists($drvSystem & "Build") Then
 		_DebugReport("EraseDownloadApplyWIM: Successfully Imaged Drive!")
@@ -349,10 +284,6 @@ Func ImageX_Apply($strName, $strPartition)
 	While 1
 		$line = StdoutRead($foo)
 		If @error Then ExitLoop
-;~ 		$progBrackets = StringLeft($line, 8) ; std output = [   10% ]
-;~ 		$progBrackets = StringReplace($progBrackets, "[", "") ; "   10% ]"
-;~ 		$progBrackets = StringReplace($progBrackets, "]", "") ; "   10% "
-;~ 		$progBrackets = StringReplace($progBrackets, " ", "") ;
 		$iPercent = Number(StringRegExpReplace($line, "[\[\] %]", ""))
 		$arrTimeRem = _StringBetween($line, "progress: ", " remaining")
 		; should only be one result.
@@ -372,8 +303,6 @@ Func GetIndexOfWim($strName, $strPartition)
 		Switch $strPartition
 		Case "System"
 			Return $strCFSMOEIndex
-		Case "Home"
-			Return $strCFSHomeIndex
 		Case "Data"
 			Return $strCFSDataIndex
 		Case "Reserved"
@@ -401,14 +330,6 @@ Func GetIndexOfWim($strName, $strPartition)
 EndFunc
 
 Func GrabFile($strURL, $strOut)
-;~ 	Local $outFile
-;~ 	$outFile = RunWait("X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_SHOWNORMAL)
-;~ 	If ($outFile = 0) And (@error <> 0) Then
-;~ 		; error in torrent download :(
-;~ 		_DebugReport("GrabFile: Error downloading file.  URL = " & $strURL & " Path = " & $strOut)
-;~ 		Return 0
-;~ 	EndIf
-;~ 	Return 1
 	ProgressOn("Downloading " & $strURL, "Work in progress...", "0 percent complete")
 
 	Local $foo = Run(@ComSpec & " /c " & "X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_HIDE, $STDERR_CHILD + $STDOUT_CHILD)
@@ -527,7 +448,7 @@ Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 	EndIf
 EndFunc   ;==>RunWaitCheck
 
-Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
+Func FixBCDDrive($strDrive, $bFixSector)
 	Local $strLetter, $outBootSect
 
 	; lazy.
@@ -545,15 +466,13 @@ Func FixBCDDrive($strDrive, $bFixSector, $bCFSWipe)
 	Local $bcdReturn = RunWait("bcdboot " & $strLetter & ":\Windows /s " & $strLetter & ":", "X:\", @SW_SHOWNORMAL)
 
 	If $bFixSector == True Then
-		If $bCFSWipe == True Then
-			$outBootSect = RunWait("X:\Windows\System32\bootsect.exe /nt60 " & $strLetter & ":\ /FORCE", "X:\", @SW_SHOWNORMAL)
-		Else
-			$outBootSect = RunWait("X:\Windows\System32\bootsect.exe /nt60 " & $strLetter & ":\ /MBR /FORCE", "X:\", @SW_SHOWNORMAL)
-		EndIf
-		If $outBootSect == 0 Then
-			MsgBox(0, "Error!", "Failed to fix boot sector")
-			Return 0
-		EndIf
+		$outBootSect = RunWait("X:\Windows\System32\bootsect.exe /nt60 " & $strLetter & ":\ /MBR /FORCE", "X:\", @SW_SHOWNORMAL)
+	Else
+		$outBootSect = RunWait("X:\Windows\System32\bootsect.exe /nt60 " & $strLetter & ":\ /FORCE", "X:\", @SW_SHOWNORMAL)
+	EndIf
+	If $outBootSect == 0 Then
+		MsgBox(0, "Error!", "Failed to fix boot sector")
+		Return 0
 	EndIf
 
 	If $bcdReturn = 0 Then
@@ -569,8 +488,7 @@ Func btnBCDFixClick()
 	Local $strLetter
 
 	$strLetter = GUICtrlRead($txtBCDDrive)
-	CreateBCDStore($strLetter & ":\")
-	;FixBCDDrive($strLetter, False, False)
+	FixBCDDrive($strLetter, True)
 
 EndFunc   ;==>btnBCDFixClick
 
