@@ -5,3 +5,23 @@ Please open this to see the most late-breaking updates, and a comprehensive tuto
 your own environment.
 
 -- Brent
+
+UPDATE:
+
+I'm aiming at the moment to make my environment more "generic", so you might suddenly find that it starts to work in your non-custom environments.
+
+Standard configuration of a WIM:
+
+1st Image: System Partition
+2nd Image: Data Partition.
+
+Bootloader is automatically applied to the 100MB partition, and hidden from user access by BTDeploy.  Uses partition configuration from:
+
+http://technet.microsoft.com/en-us/library/dd744364(WS.10).aspx
+
+As this is the recommended config by microsoft.
+
+All image types should be supported as theyre essentially the same (providing your partition scripts are right, and the ini matches). Windows RE environments will probably be supported in time, but i've not yet found a reasonable use for them.  User self-service with them is not something i'd expect from the average person.
+
+Note: If you plan to make changes to the code on windows, you'll have to convert the line endings in the partition scripts to CRLF, as i mainly code BTDeploy on my Mac.
+

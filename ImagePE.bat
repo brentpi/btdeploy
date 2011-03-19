@@ -1,12 +1,15 @@
 REM ------------------ HOME ---------------------
-SET AIKPATH=D:\Program Files\Windows AIK
-SET WPEDIR=R:\Work\ImagePE\CURRENT
+SET AIKPATH=C:\Program Files\Windows AIK
+SET WPEDIR=C:\Build\CURRENT
 REM ------------------ WORK ---------------------
 REM SET AIKPATH=C:\Program Files\Windows AIK
 REM SET WPEDIR=R:\Work\ImagePE\CURRENT
 
 RD /S %WPEDIR%-x86
 RD /S %WPEDIR%-x64
+
+REM Get around vmware issue.
+robocopy Z:\Documents\btdeploy C:\Build /MIR
 
 REM -- X86 --
 

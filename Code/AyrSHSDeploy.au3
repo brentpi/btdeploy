@@ -1,5 +1,5 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Outfile=R:\Work\ImagePE\Program Files\DETA\AyrSHSDeploy.exe
+#AutoIt3Wrapper_Outfile=Z:\Documents\btdeploy\Program Files\DETA\AyrSHSDeploy.exe
 #AutoIt3Wrapper_UseX64=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
@@ -137,14 +137,11 @@ _DebugSetup("BTDeploy Debug Output", True)
 
 Global Const $strDeploymentHost = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "DeploymentHost", "http://drop.edgiest.net/brent/")
 Global Const $strCFSMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSMOEIndex", "1")
-Global Const $strCFSRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSRecoveryIndex", "2")
-Global Const $strCFSDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSDataIndex", "4")
+Global Const $strCFSDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSDataIndex", "2")
 Global Const $strDesktopMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopMOEIndex", "1")
-Global Const $strDesktopRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopRecoveryIndex", "2")
-Global Const $strDesktopDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopDataIndex", "3")
+Global Const $strDesktopDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopDataIndex", "2")
 Global Const $strCFTMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTMOEIndex", "1")
-Global Const $strCFTRecoveryIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTRecoveryIndex", "2")
-Global Const $strCFTDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTDataIndex", "3")
+Global Const $strCFTDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTDataIndex", "2")
 	_DebugReportVar("strDeploymentHost", $strDeploymentHost)
 ; *******************************************************************
 
@@ -156,13 +153,12 @@ WEnd
 ; ********** BTDEPLOY - BRENT PICKUP 2011 ************
 ; ****************************************************
 ; THIS IS CUSTOMISED FOR MY ENVIRONMENT.  IT WILL NOT
-; WORK IN YOURS OUT OF THE BOX.
+; WORK IN YOURS OUT OF THE BOX. MAYBE.
 ; ****************************************************
 ; TODO:
-; * Update BCD Function for new more-precise bcd fixes.
-; * Remove all old ghost stuff and move the BitTorrent stuff to their respective tabs (CFT, CFS, etc).
-; * Perhaps implement parsing to dynamically get images from the server.  Could be done via INI File?
 ; * Remove all code marked as old without breaking anything.
+; * Make everything generic and support most general configs.
+; * Look into being able to provide the basics in a zip [inc imagex] -- but not ghost.
 ; ****************************************************
 ; ****************************************************
 ; ****************************************************
@@ -253,7 +249,7 @@ Func ApplyWIMImage($strName, $bPreserve)
 	; hopefully this is more precise.
 
 	RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-	; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot. Probably not for CFS though.
+	; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot.
 	If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 
 	If FileExists($drvSystem & "Build") Then
@@ -297,7 +293,7 @@ Func ImageX_Apply($strName, $strPartition)
 EndFunc
 
 Func GetIndexOfWim($strName, $strPartition)
-	;
+	; standard config is System:1 Data:2
 	Switch $strName
 	Case "CFS"
 		Switch $strPartition
@@ -305,8 +301,6 @@ Func GetIndexOfWim($strName, $strPartition)
 			Return $strCFSMOEIndex
 		Case "Data"
 			Return $strCFSDataIndex
-		Case "Reserved"
-			Return $strCFSRecoveryIndex
 		EndSwitch
 	Case "Desktop"
 		Switch $strPartition
@@ -314,8 +308,6 @@ Func GetIndexOfWim($strName, $strPartition)
 			Return $strDesktopMOEIndex
 		Case "Data"
 			Return $strDesktopDataIndex
-		Case "Reserved"
-			Return $strDesktopRecoveryIndex
 		EndSwitch
 	Case "CFT"
 		Switch $strPartition
@@ -323,8 +315,6 @@ Func GetIndexOfWim($strName, $strPartition)
 			Return $strCFTMOEIndex
 		Case "Data"
 			Return $strCFTDataIndex
-		Case "Reserved"
-			Return $strCFTRecoveryIndex
 		EndSwitch
 	EndSwitch
 EndFunc
@@ -506,6 +496,7 @@ Func btnCFSSelectGhostImageClick()
 		;MsgBox(4096,"","You chose " & $var)
 	EndIf
 EndFunc   ;==>btnCFSSelectGhostImageClick
+
 Func btnCFTSelectGhostImageClick()
 	Local $message, $var
 	$message = "Select Ghost Image"
@@ -520,6 +511,7 @@ Func btnCFTSelectGhostImageClick()
 		;MsgBox(4096,"","You chose " & $var)
 	EndIf
 EndFunc   ;==>btnCFTSelectGhostImageClick
+
 Func btnDesktopGhostSelectImageClick()
 	Local $message, $var
 	$message = "Select Ghost Image"
@@ -534,9 +526,7 @@ Func btnDesktopGhostSelectImageClick()
 		;MsgBox(4096,"","You chose " & $var)
 	EndIf
 EndFunc   ;==>btnDesktopGhostSelectImageClick
-Func btnFixGrub4DosClick()
-	If RunWaitCheck("X:\Program Files\Grubinst\grubinst.exe (hd0)", "Couldnt write grub boot sector.") = 0 Then Return 0
-EndFunc   ;==>btnFixGrub4DosClick
+
 Func GenericApplyImage($radTorrent, $radGhost, $txtGhost, $fnVar, $strType, $bPreserve)
 	; radTorrent = radiobox of torrent.
 	; radiobox of ghost
