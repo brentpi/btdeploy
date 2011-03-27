@@ -3,11 +3,11 @@ clean
 create partition primary size=100
 format quick fs=ntfs label="Reserved"
 assign letter="R"
-set id=17
 active
-create partition primary
-format quick fs=ntfs label="System" size=70000
+create partition primary size=80000
+format quick fs=ntfs label="System" 
 assign letter="S"
 create partition extended
 create partition logical
 format quick fs=ntfs label="Data"
+assign letter="Q"

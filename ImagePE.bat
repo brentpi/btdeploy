@@ -22,6 +22,7 @@ dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\drivers\inte
 dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\VBoxGuest\VBoxGuest.inf"
 dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\VBoxMouse\VBoxMouse.inf"
 dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\VBoxVideo\VBoxVideo.inf"
+dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\IntelNIC\E1K6232.inf"
 dism /image:%WPEDIR%-x86\mount /add-driver /driver:"%WPEDIR%-x86\..\Drivers\NetKVM\Vista\x86\netkvm.inf"
 
 dism /image:%WPEDIR%-x86\mount /Add-Package /PackagePath:"%AIKPATH%\Tools\PETools\x86\WinPE_FPs\WinPE-Scripting.cab"

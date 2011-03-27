@@ -212,13 +212,14 @@ Func ApplyWIMImage($strName, $bPreserve)
 
 	If PartitionMachine($strName, False) = 0 Then
 		_DebugReport("EraseDownloadApplyWIM: Failed to partition machine.  Check download on server, or presence of gdisk32.")
-		;MsgBox(16, "Error!", "Failed to partition machine.  Check download on server, or presence of gdisk32.")
 		Return 0
 	EndIf
 
 	$drvSystem = FindDriveByLabel("System")
 	$drvData = FindDriveByLabel("Data")
 	$drvRecovery = FindDriveByLabel("Reserved")
+	; no longer "recovery" really... it's the BCD partition as defined by microsoft.
+	; it used to be my custom recovery part in dual boot.
 	If ($drvSystem == "") Or ($drvData == "") Or ($drvRecovery == "") Then
 		_DebugReport("EraseDownloadApplyWIM: Failed to detect partitions.")
 		_DebugReportVar("drvSystem", $drvSystem)
@@ -242,17 +243,27 @@ Func ApplyWIMImage($strName, $bPreserve)
 
 	; Apply Image.
 	ImageX_Apply($strName, "System")
-	ImageX_Apply($strName, "Reserved")
-	ImageX_Apply($strName, "Data")
+	; checks to see if output of "imagex /info" contains <NAME>Data.
+	; you can apply it to System as well.
+	If ImageX_Check($strName, "Data") = 1 Then
+		_DebugReport("Data Image present and applying.")
+		ImageX_Apply($strName, "Data")
+	EndIf
 
 	; This part fixes the BCD.  Merge this code into the BCD Fix function when it is tested and proven mature.  Otherwise revert to old code.
 	; hopefully this is more precise.
 
-	RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
+	; RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 	; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot.
+	RunWaitCheck("bcdboot " & $drvSystem & "Windows /l en-au", "Error updating BCD")
+	; different to the one above, because it will write to the "Reserved" partition.  not the
+	; C:\, which is not the proper way to do it.  This is because it breaks bitlocker and all that.
+	; not that you'll want to use bitlocker on a CFS/CFT laptop probably.
 	If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 
-	If FileExists($drvSystem & "Build") Then
+	; this is specific for the DETA environment.  the "CFSBuild" check is specific to mine (combining
+	; all image types in one).
+	If FileExists($drvSystem & "Build") Or FileExists($drvSystem & "CFSBuild") Then
 		_DebugReport("EraseDownloadApplyWIM: Successfully Imaged Drive!")
 		MsgBox(0, "Success!", "Imaged Drive!")
 		DirRemove($drvData & $strName, True)
@@ -290,6 +301,21 @@ Func ImageX_Apply($strName, $strPartition)
 
 	_DebugReport("Destroyed progress for: " & $strPartition)
 	ProgressOff()
+EndFunc
+
+Func ImageX_Check($strName, $strPartition)
+	;
+	$drvData = FindDriveByLabel("Data")
+	_DebugReport("Checking Image for: " & $strPartition)
+	Local $foo = Run(@ComSpec & " /c " & "X:\Windows\System32\imagex.exe /info " & $drvData & $strName & "\Image.WIM ", @SystemDir, @SW_HIDE, $STDERR_CHILD + $STDOUT_CHILD)
+	Local $line
+	While 1
+		$line = StdoutRead($foo)
+		If @error Then ExitLoop
+		If StringInStr($line, "<NAME>" & $strPartition, 0) Then Return 1
+	Wend
+
+	_DebugReport("Partition not present in image: " & $strPartition)
 EndFunc
 
 Func GetIndexOfWim($strName, $strPartition)
@@ -348,8 +374,11 @@ EndFunc
 
 Func CreateBCDStore($strDrive)
 	; *********************
-	; *** NO USE FOR THIS AS OF 12/02
+	; *** THIS IS HERE FOR ARCHIVAL PURPOSES.
 	; *********************
+	; This function isn't used anymore, but it's still here because it took so long to create and fine
+	; tune.  So, i'm leaving it in the hope that it might help someone else in the future.
+	; ---
 	; This Function creates a blank bcd store from scratch on the specified drive, and also copies the bcd files.
 	RunWaitCheck("attrib -S -H -R " & $strDrive & "Boot\BCD", "Failed to remove BCD Attributes", $strDrive & "Windows\System32")
 	FileDelete($strDrive & "Boot\BCD")
@@ -360,9 +389,6 @@ Func CreateBCDStore($strDrive)
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {bootmgr} locale en-US", "Failed to set locale.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /timeout 10", "Failed to set timeout", $strDrive & "Windows\System32") = 0 Then Return 0
 	; needs to run in C:\Windows\System32, assuming C: = the partition. this is because bcdedit is not in winpe by default.
-	;If FileExists($strDrive & "Boot\BCD") = 0 Then
-	;	_DebugReport("Cant find BCD store..", True)
-	;EndIf
 	Local $bcdTries = 0
 	Do
 		$bcdTries = $bcdTries + 1
@@ -408,9 +434,6 @@ Func CreateBCDStore($strDrive)
 
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} device partition=" & StringLeft($strDrive, 2), "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} osdevice partition=" & StringLeft($strDrive, 2), "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
-	;If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} device locate=\windows\system32\winload.exe", "Failed to set device partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
-	;If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} osdevice locate=\windows", "Failed to set osdevice partition in OSLOADER", $strDrive & "Windows\System32") = 0 Then Return 0
-
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} path \Windows\system32\winload.exe", "Failed to set winload path.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} systemroot \Windows", "Failed to set windows path.", $strDrive & "Windows\System32") = 0 Then Return 0
 	If RunWaitCheck("bcdedit /store " & $strDrive & "Boot\BCD /set {" & $bcdGuid & "} locale en-US", "Failed to set locale - osloader.", $strDrive & "Windows\System32") = 0 Then Return 0
