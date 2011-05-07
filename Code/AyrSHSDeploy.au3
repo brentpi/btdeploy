@@ -255,11 +255,12 @@ Func ApplyWIMImage($strName, $bPreserve)
 
 	; RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
 	; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot.
-	RunWaitCheck("bcdboot " & $drvSystem & "Windows /l en-au", "Error updating BCD")
+
 	; different to the one above, because it will write to the "Reserved" partition.  not the
 	; C:\, which is not the proper way to do it.  This is because it breaks bitlocker and all that.
 	; not that you'll want to use bitlocker on a CFS/CFT laptop probably.
 	If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
+	RunWaitCheck("X:\Windows\System32\bcdboot.exe " & $drvSystem & "Windows /l en-au", "Error updating BCD")
 
 	; this is specific for the DETA environment.  the "CFSBuild" check is specific to mine (combining
 	; all image types in one).

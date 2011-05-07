@@ -19,6 +19,7 @@ Global Const $strDesktopMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini",
 Global Const $strDesktopDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopDataIndex", "2")
 Global Const $strCFTMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTMOEIndex", "1")
 Global Const $strCFTDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTDataIndex", "2")
+Global Const $strRebootOnCompletion = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "RebootOnCompletion", "No")
 
 Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 	; Function that all error checking is done in.
@@ -121,9 +122,12 @@ Func ApplyWIMImage($strName, $bPreserve)
 	Local $outApplyData, $outApplyHome
 	Local $drvSystem, $drvRecovery, $drvData, $outSetPartActive
 
-	If PartitionMachine($strName, False) = 0 Then
-		_DebugReport("EraseDownloadApplyWIM: Failed to partition machine.  Check download on server, or presence of gdisk32.")
-		Return 0
+	If $bPreserve = False Then
+		; if we don't want to preserve D:
+		If PartitionMachine($strName, False) = 0 Then
+			_DebugReport("EraseDownloadApplyWIM: Failed to partition machine.  Check download on server, or presence of gdisk32.")
+			Return 0
+		EndIf
 	EndIf
 
 	$drvSystem = FindDriveByLabel("System")
@@ -161,33 +165,32 @@ Func ApplyWIMImage($strName, $bPreserve)
 		ImageX_Apply($strName, "Data")
 	EndIf
 
-	; This part fixes the BCD.  Merge this code into the BCD Fix function when it is tested and proven mature.  Otherwise revert to old code.
-	; hopefully this is more precise.
+	; This part handles our bootloader.  Some notes:
+	; - Possibly breaks BitLocker -- though, dont think youd want to use it on a Desktop/CFS/CFT anyway.
+	; - Right way to do it according to microsoft.
+	; - OVERWRITES the boot sector on the "SYSTEM" partition (determined by the setup) to one of Windows Vista/7
+	; - Runs BCDBoot to copy BOOTMGR into place and configure it.
 
-	; RunWaitCheck("bcdboot " & $drvSystem & "Windows /s " & StringLeft($drvSystem, 2), "Error updating MOE BCD")
-	; BCDBOOT should be sufficient.  IT runs a 'locate' to find winload, etc on first boot.
-
-	; different to the one above, because it will write to the "Reserved" partition.  not the
-	; C:\, which is not the proper way to do it.  This is because it breaks bitlocker and all that.
-	; not that you'll want to use bitlocker on a CFS/CFT laptop probably.
 	If RunWaitCheck("X:\Windows\System32\bootsect.exe /nt60 SYS /FORCE /MBR", "Failed to write boot sector.") = 0 Then Return 0
 	RunWaitCheck("X:\Windows\System32\bcdboot.exe " & $drvSystem & "Windows /l en-au", "Error updating BCD")
 
-	; this is specific for the DETA environment.  the "CFSBuild" check is specific to mine (combining
-	; all image types in one).
+	; This should work for all DETA image types.  Contact me if it doesnt. bpick36@eq.edu.au
 	If FileExists($drvSystem & "Build") Or FileExists($drvSystem & "CFSBuild") Then
 		_DebugReport("EraseDownloadApplyWIM: Successfully Imaged Drive!")
-		MsgBox(0, "Success!", "Imaged Drive!")
+		MsgBox(0, "Success!", "Imaged Drive!", 20)
 		DirRemove($drvData & $strName, True)
 		DirRemove($drvData & ".aria2", True)
 		FileDelete($drvData & $strName & ".torrent")
+		If $strRebootOnCompletion = "Yes" Then
+			Shutdown(6) ; force a reboot.  codes 2+4
+		EndIf
 		Return 1
 	Else
 		DirRemove($drvData & $strName, True)
 		DirRemove($drvData & ".aria2", True)
 		FileDelete($drvData & $strName & ".torrent")
 		_DebugReport("EraseDownloadApplyWIM: Something went wrong.  Check this log.")
-		MsgBox(16, "Error.", "Something went screwy -- dont know what.")
+		MsgBox(16, "Error.", "Somethings wrong -- please check the log for info.")
 		Return 0
 	EndIf
 EndFunc   ;==>EraseDownloadApplyWIM

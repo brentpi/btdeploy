@@ -1,5 +1,5 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Outfile=Z:\Documents\btdeploy\Program Files\DETA\AyrSHSDeploy.exe
+#AutoIt3Wrapper_Outfile=Y:\Documents\btdeploy\Program Files\DETA\AyrSHSDeploy.exe
 #AutoIt3Wrapper_UseX64=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
@@ -143,6 +143,8 @@ WEnd
 ; Note: all of this is customised for my environment (by default)
 ; most changes you need to get it to work in yours are able
 ; to be made by editing the ini file in "\Program Files\DETA\" on the WIM.
+; If you want to adjust the "Seed time", just change the aria2c.conf.
+; There is no "hardcoded" value in this script.
 ; ****************************************************
 ; TODO:
 ; * Remove all code marked as old without breaking anything.
@@ -221,9 +223,9 @@ Func GenericApplyImage($radTorrent, $radGhost, $txtGhost, $fnVar, $strType, $bPr
 		;
 		If $strSessionName = "" Then Return 0
 		If $fnVar <> "" Then
-			RunWaitCheck("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnVar & ",dst=1", "Ghosting failed. Refer to Ghosterr.txt.")
+			RunWaitCheck("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=" & $fnVar & ",dst=1", "Ghosting failed. Refer to X:\Ghosterr.txt.")
 		Else
-			RunWaitCheck("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "Ghosting failed. Refer to Ghosterr.txt.")
+			RunWaitCheck("X:\Program Files\Ghost\Ghost32.exe -BATCH -CLONE,mode=RESTORE,src=@MC" & $strSessionName & ",dst=1", "Ghosting failed. Refer to X:\Ghosterr.txt.")
 		EndIf
 	ElseIf $bTorrent = True Then
 		; do our torrenty stuff.
