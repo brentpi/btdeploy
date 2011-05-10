@@ -8,7 +8,7 @@ REM SET WPEDIR=R:\Work\ImagePE\CURRENT
 RD /S %WPEDIR%-x86
 RD /S %WPEDIR%-x64
 
-REM Get around vmware issue.
+REM Get around vmware issue. COMMENT THIS OUT IF YOURE BUILDING ON A WIN MACHINE
 robocopy Z:\Documents\btdeploy C:\Build /MIR
 
 REM -- X86 --

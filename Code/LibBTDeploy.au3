@@ -290,6 +290,7 @@ Func GrabFile($strURL, $strOut)
 		EndIf
 	Wend
 
+	DllClose($dll)
 	_DebugReport("Destroyed progress for: " & $strURL)
 	ProgressOff()
 EndFunc
