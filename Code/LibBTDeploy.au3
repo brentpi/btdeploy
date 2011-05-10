@@ -10,6 +10,7 @@
 #include <Constants.au3>
 #include <String.au3>
 #include <Debug.au3>
+#include <Misc.au3>
 
 Global $arrAlphabet[26] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 Global Const $strDeploymentHost = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "DeploymentHost", "")
@@ -266,6 +267,8 @@ Func GrabFile($strURL, $strOut)
 	Local $foo = Run(@ComSpec & " /c " & "X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_HIDE, $STDERR_CHILD + $STDOUT_CHILD)
 	Local $line
 	Local $tSeedMin = 0
+	$dll = DllOpen("user32.dll")
+	
 	While 1
 		$line = StdoutRead($foo)
 		If @error Then ExitLoop
@@ -274,6 +277,10 @@ Func GrabFile($strURL, $strOut)
 
 		If StringInStr($line, "Seeding") Then
 			;
+			If (_IsPressed(43, $dll)) Then
+				$ariaPID = ProcessExists("aria2c.exe")
+				If $ariaPID Then ProcessClose($ariaPID)
+			EndIf
 			ProgressSet(100, "100% complete - seeding for 5 min...")
 		EndIf
 
