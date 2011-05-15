@@ -1,0 +1,6 @@
+select disk |device|
+create partition primary size=|pSize|
+select partition 2
+assign letter p:
+format fs=ntfs quick label=System
+exit

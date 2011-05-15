@@ -1,0 +1,4 @@
+select disk |device|
+select partition 1
+active
+exit

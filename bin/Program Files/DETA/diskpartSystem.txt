@@ -1,0 +1,7 @@
+select disk |device|
+clean
+create partition primary size=100
+select partition 1
+assign letter c:
+format fs=ntfs quick label=Reserved
+exit

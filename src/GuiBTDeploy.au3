@@ -1,5 +1,5 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Outfile=Y:\Documents\btdeploy\Program Files\DETA\AyrSHSDeploy.exe
+#AutoIt3Wrapper_Outfile=Y:\Documents\btdeploy\bin\Program Files\BTDeploy\BTDeploy.exe
 #AutoIt3Wrapper_UseX64=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
@@ -24,7 +24,7 @@ Opt("GUIOnEventMode", 1)
 #Region ### START Koda GUI section ### Form=r:\work\koda\forms\ayrshsdeploy.kxf
 $Form1_2 = GUICreate("AyrSHS WinPE Environment", 615, 438)
 GUISetOnEvent($GUI_EVENT_CLOSE, "Form1Close")
-$Label1 = GUICtrlCreateLabel(IniRead("X:\Program Files\DETA\Settings.ini", "Main", "GuiMainLabel", "AyrSHS WinPE Environment"), 128, 16, 383, 37)
+$Label1 = GUICtrlCreateLabel(IniRead("X:\Program Files\BTDeploy\Settings.ini", "Main", "GuiMainLabel", "AyrSHS WinPE Environment"), 128, 16, 383, 37)
 GUICtrlSetFont(-1, 20, 800, 0, "Tahoma")
 $Tab1 = GUICtrlCreateTab(16, 64, 585, 353, $WS_GROUP)
 GUICtrlSetResizing(-1, $GUI_DOCKWIDTH+$GUI_DOCKHEIGHT)
@@ -142,7 +142,7 @@ WEnd
 ; ****************************************************
 ; Note: all of this is customised for my environment (by default)
 ; most changes you need to get it to work in yours are able
-; to be made by editing the ini file in "\Program Files\DETA\" on the WIM.
+; to be made by editing the ini file in "\Program Files\BTDeploy\" on the WIM.
 ; If you want to adjust the "Seed time", just change the aria2c.conf.
 ; There is no "hardcoded" value in this script.
 ; ****************************************************

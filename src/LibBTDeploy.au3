@@ -13,14 +13,14 @@
 #include <Misc.au3>
 
 Global $arrAlphabet[26] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-Global Const $strDeploymentHost = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "DeploymentHost", "")
-Global Const $strCFSMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSMOEIndex", "1")
-Global Const $strCFSDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFSDataIndex", "2")
-Global Const $strDesktopMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopMOEIndex", "1")
-Global Const $strDesktopDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "DesktopDataIndex", "2")
-Global Const $strCFTMOEIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTMOEIndex", "1")
-Global Const $strCFTDataIndex = IniRead("X:\Program Files\DETA\Settings.ini", "ImageX", "CFTDataIndex", "2")
-Global Const $strRebootOnCompletion = IniRead("X:\Program Files\DETA\Settings.ini", "Main", "RebootOnCompletion", "No")
+Global Const $strDeploymentHost = IniRead("X:\Program Files\BTDeploy\Settings.ini", "Main", "DeploymentHost", "")
+Global Const $strCFSMOEIndex = IniRead("X:\Program Files\BTDeploy\Settings.ini", "ImageX", "CFSMOEIndex", "1")
+Global Const $strCFSDataIndex = IniRead("X:\Program Files\BTDeploy\Settings.ini", "ImageX", "CFSDataIndex", "2")
+Global Const $strDesktopMOEIndex = IniRead("X:\Program Files\BTDeploy\Settings.ini", "ImageX", "DesktopMOEIndex", "1")
+Global Const $strDesktopDataIndex = IniRead("X:\Program Files\BTDeploy\Settings.ini", "ImageX", "DesktopDataIndex", "2")
+Global Const $strCFTMOEIndex = IniRead("X:\Program Files\BTDeploy\Settings.ini", "ImageX", "CFTMOEIndex", "1")
+Global Const $strCFTDataIndex = IniRead("X:\Program Files\BTDeploy\Settings.ini", "ImageX", "CFTDataIndex", "2")
+Global Const $strRebootOnCompletion = IniRead("X:\Program Files\BTDeploy\Settings.ini", "Main", "RebootOnCompletion", "No")
 
 Func RunWaitCheck($strCmd, $strErrorMsgBox, $strPath = "X:\")
 	; Function that all error checking is done in.
@@ -79,7 +79,7 @@ EndFunc   ;==>FixBCDDrive
 Func PartitionMachine($strType, $bEnableOutput = True)
 	Local $outDownload, $outPartition
 
-	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=X:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strDeploymentHost & $strType & "/disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
+	$outDownload = RunWait("X:\Windows\System32\aria2c.exe --dir=X:\ --file-allocation=none --check-integrity=true --conf=""X:\Program Files\BTDeploy\aria2c.conf"" " & $strDeploymentHost & $strType & "/disk.wipe.txt", "X:\", @SW_SHOWNORMAL)
 	If ($outDownload = 0) And (@error <> 0) Then
 		If $bEnableOutput Then
 			_DebugReport("Download of partition script failed.", True)
@@ -264,7 +264,7 @@ EndFunc
 Func GrabFile($strURL, $strOut)
 	ProgressOn("Downloading " & $strURL, "Work in progress...", "0 percent complete")
 
-	Local $foo = Run(@ComSpec & " /c " & "X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\DETA\aria2c.conf"" " & $strURL, $strOut, @SW_HIDE, $STDERR_CHILD + $STDOUT_CHILD)
+	Local $foo = Run(@ComSpec & " /c " & "X:\Windows\System32\aria2c.exe --dir=" & $strOut & " --file-allocation=none --check-integrity=true --conf=""X:\Program Files\BTDeploy\aria2c.conf"" " & $strURL, $strOut, @SW_HIDE, $STDERR_CHILD + $STDOUT_CHILD)
 	Local $line
 	Local $tSeedMin = 0
 	$dll = DllOpen("user32.dll")

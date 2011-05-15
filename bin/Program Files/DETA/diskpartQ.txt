@@ -1,0 +1,6 @@
+select disk |device|
+create partition primary size=|qSize|
+select partition 3
+assign letter q:
+format fs=ntfs quick label=Data
+exit

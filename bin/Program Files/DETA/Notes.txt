@@ -1,0 +1,9 @@
+Image contains the following packs:
+
+dism /image:d:\mount /add-package /packagepath:"C:\Program Files\Windows AIK\Tools\PETools\x86\WinPE_FPs\winpe-scripting.cab"
+
+dism /image:d:\mount /add-package /packagepath:"C:\Program Files\Windows AIK\Tools\PETools\x86\WinPE_FPs\en-us\winpe-scripting_en-us.cab"
+
+dism /image:d:\mount /add-package /packagepath:"C:\Program Files\Windows AIK\Tools\PETools\x86\WinPE_FPs\winpe-wmi.cab"
+
+dism /image:d:\mount /add-package /packagepath:"C:\Program Files\Windows AIK\Tools\PETools\x86\WinPE_FPs\en-us\winpe-wmi_en-us.cab"
