@@ -1,33 +1,36 @@
 
-/bin/Drivers
-/bin/Program Files/BTDeploy/BTDeploy.exe
-/bin/Program Files/Ghost/GhConfig32.exe
-/bin/Program Files/Ghost/GhConfig64.exe
-/bin/Program Files/Ghost/ghDplyAw32.exe
-/bin/Program Files/Ghost/ghost32.exe
-/bin/Program Files/Ghost/Ghost64.exe
-/bin/Program Files/Ghost/Ghostexp.exe
-/bin/Program Files/Ghost/GhostImageFile.dll
-/bin/Program Files/Ghost/GhRegEdit32.exe
-/bin/Program Files/Ghost/GhRegEdit64.exe
-/bin/Program Files/Ghost/GhWalk32.exe
-/bin/Program Files/Ghost/gdisk32.exe
-/bin/Program Files/Ghost/Gdisk64.exe
-/bin/Program Files/ExplorerPlusPlus/Explorer++.exe
+bin/Drivers
+bin/Program Files/BTDeploy/BTDeploy.exe
+bin/Program Files/Ghost/GhConfig32.exe
+bin/Program Files/Ghost/GhConfig64.exe
+bin/Program Files/Ghost/ghDplyAw32.exe
+bin/Program Files/Ghost/ghost32.exe
+bin/Program Files/Ghost/Ghost64.exe
+bin/Program Files/Ghost/Ghostexp.exe
+bin/Program Files/Ghost/GhostImageFile.dll
+bin/Program Files/Ghost/GhRegEdit32.exe
+bin/Program Files/Ghost/GhRegEdit64.exe
+bin/Program Files/Ghost/GhWalk32.exe
+bin/Program Files/Ghost/gdisk32.exe
+bin/Program Files/Ghost/Gdisk64.exe
+bin/Program Files/ExplorerPlusPlus/Explorer++.exe
 /CURRENT-x86
 /CURRENT-x64
-/bin/Program Files/DETA
-/bin/System32/Servicing
-/bin/System32/bcdboot.exe
-/bin/System32/gimagex.exe
-/bin/System32/imagex.exe
-/bin/System32/intlcfg.exe
-/bin/System32/oscdimg.exe
-/bin/System32/README.html
-/bin/System32/ssshim.dll
-/bin/System32/wdsmcast.exe
-/bin/System32/wimgapi.dll
-/bin/System32/wimmount.inf
-/bin/System32/wimmount.sys
-/bin/System32/WimMountInstall.exe
-/bin/System32/wimserv.exe
+bin/Program Files/DETA
+bin/System32/Servicing
+bin/System32/bcdboot.exe
+bin/System32/gimagex.exe
+bin/System32/imagex.exe
+bin/System32/intlcfg.exe
+bin/System32/oscdimg.exe
+bin/System32/README.html
+bin/System32/ssshim.dll
+bin/System32/wdsmcast.exe
+bin/System32/wimgapi.dll
+bin/System32/wimmount.inf
+bin/System32/wimmount.sys
+bin/System32/WimMountInstall.exe
+bin/System32/wimserv.exe
+bin/Program Files/Grubinst/grubinst.exe
+bin/Program Files/Grubinst/grubinst_gui.exe
+bin/Program Files/Grubinst/grubmenu.exe
